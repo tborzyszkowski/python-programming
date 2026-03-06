@@ -1,0 +1,44 @@
+@startuml for_loop
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Pętla for w Pythonie
+
+start
+
+:Pobierz iterator\nz iterowalnego obiektu;
+
+repeat
+  :Pobierz następny element\nze iteratora;
+  if (StopIteration?) then (tak)
+    break
+  endif
+  if (continue?) then (tak)
+    note right: pomijamy ciało pętli
+  else (nie)
+    if (break?) then (tak)
+      note right: przerywamy pętlę
+      break
+    else (nie)
+      :Wykonaj ciało pętli;
+    endif
+  endif
+repeat while (więcej elementów?)
+
+if (break użyty?) then (nie)
+  :Blok else\n(opcjonalny);
+endif
+
+:dalszy kod;
+
+stop
+
+note right
+  for x in iterable:
+      ciało
+  else:
+      po pętli (bez break)
+end note
+
+@enduml
+

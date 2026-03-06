@@ -1,0 +1,43 @@
+@startuml mutable_vs_immutable
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Mutowalny vs Niemutowalny – model referencji w Pythonie
+
+package "Niemutowalny – str" {
+    rectangle "s = \"Python\"" as VAR_S #D6EAF8
+    rectangle "Obiekt: \"Python\"\nid=1000" as OBJ1 #AED6F1
+    VAR_S --> OBJ1 : "referencja"
+
+    rectangle "s += \" 3\"\ns teraz wskazuje na\nnowy obiekt" as OP #FDFEFE
+    rectangle "Nowy obiekt: \"Python 3\"\nid=2000" as OBJ2 #85C1E9
+    OP --> OBJ2 : "nowy obiekt\n(id zmieniony)"
+
+    note bottom of OBJ1
+      Oryginalny obiekt NIE
+      został zmodyfikowany.
+      Może być usunięty przez GC
+      jeśli brak referencji.
+    end note
+}
+
+package "Mutowalny – list" {
+    rectangle "lst = [1,2,3]" as VAR_L #D5F5E3
+    rectangle "Obiekt: [1,2,3]\nid=3000" as OBJ3 #A9DFBF
+
+    VAR_L --> OBJ3 : "referencja"
+
+    rectangle "lst.append(4)" as OP2 #FDFEFE
+    rectangle "Ten sam obiekt: [1,2,3,4]\nid=3000 (bez zmian!)" as OBJ4 #82E0AA
+
+    OP2 --> OBJ4 : "MODYFIKACJA\nin-place"
+
+    note bottom of OBJ3
+      Ten sam obiekt jest
+      modyfikowany w miejscu.
+      id pozostaje takie samo.
+    end note
+}
+
+@enduml
+

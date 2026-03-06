@@ -1,0 +1,87 @@
+@startuml builtin_collections
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #EBF5FB
+skinparam classBorderColor #1A5276
+
+title Wbudowane typy kolekcyjne w Pythonie
+
+class list {
+  + Mutowalny
+  + Uporządkowany
+  + Duplikaty dozwolone
+  --
+  append(x)
+  insert(i, x)
+  remove(x)
+  pop(i)
+  sort()
+  reverse()
+}
+
+class tuple {
+  - Niemutowalny
+  + Uporządkowany
+  + Duplikaty dozwolone
+  --
+  count(x)
+  index(x)
+}
+
+class dict {
+  + Mutowalny
+  + Porządek wstawiania (3.7+)
+  + Klucze unikalne
+  --
+  keys()
+  values()
+  items()
+  get(key, default)
+  update(d)
+  pop(key)
+}
+
+class set {
+  + Mutowalny
+  - Nieuporządkowany
+  - Duplikaty niedozwolone
+  --
+  add(x)
+  discard(x)
+  union(s)
+  intersection(s)
+  difference(s)
+}
+
+class frozenset {
+  - Niemutowalny
+  - Nieuporządkowany
+  - Duplikaty niedozwolone
+  --
+  union(s)
+  intersection(s)
+  difference(s)
+}
+
+class str {
+  - Niemutowalny
+  + Uporządkowany
+  + Sekwencja znaków Unicode
+  --
+  upper() / lower()
+  strip() / split()
+  replace() / find()
+  startswith() / endswith()
+}
+
+note "Może być kluczem dict i\nelementem set (hashable)" as N1
+note "NIE może być kluczem dict\nani elementem set" as N2
+
+tuple .. N1
+frozenset .. N1
+str .. N1
+list .. N2
+dict .. N2
+set .. N2
+
+@enduml
+

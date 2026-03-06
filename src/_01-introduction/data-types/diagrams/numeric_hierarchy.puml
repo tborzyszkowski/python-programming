@@ -1,0 +1,47 @@
+@startuml numeric_hierarchy
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #D6EAF8
+skinparam classBorderColor #2E86C1
+
+title Hierarchia typów numerycznych w Pythonie
+
+class numbers.Number <<abstract>>
+class numbers.Complex <<abstract>>
+class numbers.Real <<abstract>>
+class numbers.Rational <<abstract>>
+class numbers.Integral <<abstract>>
+
+class complex
+class float
+class fractions.Fraction
+class int
+class bool
+
+numbers.Number <|-- numbers.Complex
+numbers.Complex <|-- numbers.Real
+numbers.Real <|-- numbers.Rational
+numbers.Rational <|-- numbers.Integral
+
+numbers.Complex <|.. complex
+numbers.Real <|.. float
+numbers.Rational <|.. fractions.Fraction
+numbers.Integral <|.. int
+int <|-- bool
+
+note right of bool
+  True == 1
+  False == 0
+end note
+
+note right of float
+  IEEE 754 double
+  64-bit precision
+end note
+
+note right of int
+  Nieograniczona precyzja
+  (bignum)
+end note
+
+@enduml
+

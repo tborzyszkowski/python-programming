@@ -1,0 +1,32 @@
+@startuml string_operations
+skinparam backgroundColor #FAFAFA
+skinparam rectangleBackgroundColor #D5F5E3
+skinparam ArrowColor #1E8449
+
+title Operacje na napisach (str) w Pythonie
+
+rectangle "Napis\ns = \"Python 3\"" as STR
+
+rectangle "Indeksowanie\ns[0] → 'P'\ns[-1] → '3'" as IDX
+rectangle "Wycinki (slicing)\ns[1:4] → 'yth'\ns[::-1] → '3 nohtyP'" as SLICE
+rectangle "Konkatenacja\ns + \" jest super\"" as CONCAT
+rectangle "Powtarzanie\n\"ha\" * 3 → \"hahaha\"" as REPEAT
+rectangle "Metody\ns.upper(), s.lower()\ns.strip(), s.split()\ns.replace(), s.find()" as METHODS
+rectangle "f-string\nf\"Witaj {name}\"" as FSTR
+rectangle "Test zawierania\n\"yt\" in s → True" as IN
+
+STR --> IDX
+STR --> SLICE
+STR --> CONCAT
+STR --> REPEAT
+STR --> METHODS
+STR --> FSTR
+STR --> IN
+
+note bottom of STR
+  str jest NIEMUTOWALNY –
+  każda operacja tworzy NOWY obiekt!
+end note
+
+@enduml
+

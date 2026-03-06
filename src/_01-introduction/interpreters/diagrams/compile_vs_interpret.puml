@@ -1,0 +1,38 @@
+@startuml compile_vs_interpret
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+skinparam rectangleBackgroundColor #D6EAF8
+skinparam noteBackgroundColor #FDFEFE
+
+title Kompilator vs Interpreter
+
+package "Podejście kompilacyjne (np. C)" {
+    rectangle "Kod źródłowy\n(.c)" as SRC_C
+    rectangle "Kompilator" as COMP
+    rectangle "Kod maszynowy\n(.exe)" as EXE
+    rectangle "Procesor (CPU)" as CPU_C
+    SRC_C --> COMP : "kompilacja\n(przed uruchomieniem)"
+    COMP --> EXE
+    EXE --> CPU_C : "uruchomienie"
+}
+
+package "Podejście interpretacyjne (np. Python)" {
+    rectangle "Kod źródłowy\n(.py)" as SRC_PY
+    rectangle "Interpreter\n(CPython)" as INTERP
+    rectangle "Wynik" as RESULT
+    SRC_PY --> INTERP : "linia po linii\n(w trakcie uruchomienia)"
+    INTERP --> RESULT
+}
+
+note bottom of COMP
+  Cały program jest tłumaczony
+  naraz, PRZED uruchomieniem.
+end note
+
+note bottom of INTERP
+  Kod tłumaczony i wykonywany
+  na bieżąco, instrukcja po instrukcji.
+end note
+
+@enduml
+

@@ -1,0 +1,36 @@
+@startuml python_execution_pipeline
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Pipeline wykonania CPython
+
+rectangle "Kod źródłowy\nscript.py" as SRC #D6EAF8
+rectangle "Tokenizer\n(Lexer)" as LEX #D5F5E3
+rectangle "Parser\n(AST)" as PARSE #FDEBD0
+rectangle "Kompilator\nbajtkodu" as BYTEC #F9EBEA
+rectangle "Bajtkod\n__pycache__/*.pyc" as PYC #EBF5FB
+rectangle "PVM\n(Python Virtual Machine)" as PVM #E8DAEF
+rectangle "Wynik\n(output)" as OUT #FDFEFE
+
+SRC --> LEX : "analiza leksykalna\n(tokeny)"
+LEX --> PARSE : "budowanie drzewa AST"
+PARSE --> BYTEC : "Abstract Syntax Tree"
+BYTEC --> PYC : "serializacja\n(marshal)"
+PYC --> PVM : "ładowanie i\nexekucja"
+PVM --> OUT
+
+note right of PYC
+  Plik .pyc zapisywany jest
+  w __pycache__/ i używany
+  przy kolejnych uruchomieniach
+  (jeśli .py się nie zmieniło).
+end note
+
+note right of PVM
+  PVM to pętla:
+  fetch → decode → execute
+  (instrukcja bajtkodowa po instrukcji)
+end note
+
+@enduml
+

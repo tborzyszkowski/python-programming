@@ -1,0 +1,31 @@
+@startuml if_elif_else
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Instrukcja if / elif / else
+
+start
+
+:warunek if;
+
+if (warunek?) then (True)
+  :blok if;
+elseif (elif 1?) then (True)
+  :blok elif 1;
+elseif (elif 2?) then (True)
+  :blok elif 2;
+else (False)
+  :blok else\n(opcjonalny);
+endif
+
+:dalszy kod;
+
+stop
+
+note right
+  Wyrażenie warunkowe:
+  x = "A" if cond else "B"
+end note
+
+@enduml
+

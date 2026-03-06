@@ -1,0 +1,25 @@
+@startuml repl_flow
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Działanie REPL (Read–Eval–Print Loop)
+
+start
+
+:Uruchomienie\npython / ipython;
+
+repeat
+  :READ\n(odczytaj wiersz od użytkownika);
+  :EVAL\n(oceń / wykonaj wyrażenie);
+  if (Błąd?) then (tak)
+    :Wyświetl komunikat błędu;
+  else (nie)
+    :PRINT\n(wyświetl wynik);
+  endif
+repeat while (exit() lub Ctrl+D?) is (nie)
+
+:Zakończenie;
+stop
+
+@enduml
+

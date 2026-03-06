@@ -1,0 +1,40 @@
+@startuml match_statement
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+skinparam rectangleBackgroundColor #EBF5FB
+
+title Instrukcja match/case (Python 3.10+)
+
+start
+
+:wartość = wyrażenie;
+
+:match wartość;
+
+if (case wzorzec_1\n+ guard?) then (pasuje)
+  :Blok case 1;
+elseif (case wzorzec_2?) then (pasuje)
+  :Blok case 2;
+elseif (case wzorzec_N?) then (pasuje)
+  :Blok case N;
+else
+  :case _ (wildcard)\n– domyślny;
+endif
+
+:dalszy kod;
+
+stop
+
+note right
+  Rodzaje wzorców:
+  - Literały: "start", 42, True
+  - Wildcard: _
+  - Alternatywa: "a" | "b"
+  - Sekwencja: [x, y]
+  - Słownik: {"klucz": val}
+  - Klasa: Point(x=x, y=y)
+  - Guard (warunek): case x if x > 0
+end note
+
+@enduml
+

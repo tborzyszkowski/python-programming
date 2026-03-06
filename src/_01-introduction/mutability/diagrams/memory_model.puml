@@ -1,0 +1,39 @@
+@startuml memory_model
+skinparam backgroundColor #FAFAFA
+skinparam rectangleBackgroundColor #EBF5FB
+skinparam ArrowColor #1A5276
+
+title Model pamięci Pythona – referencje i stos/sterta
+
+package "Przestrzeń nazw (namespace / stack)" {
+    rectangle "x" as X #D6EAF8
+    rectangle "y" as Y #D6EAF8
+    rectangle "a" as A #D5F5E3
+    rectangle "b" as B #D5F5E3
+}
+
+package "Sterta (heap) – obiekty" {
+    rectangle "Obiekt int\nwartość=42\nid=1000\nref_count=2" as INT42 #AED6F1
+    rectangle "Obiekt list\nwartość=[1,2,3]\nid=2000\nref_count=2" as LIST #A9DFBF
+    rectangle "Obiekt list\nwartość=[1,2,3] (kopia)\nid=3000\nref_count=1" as LIST_COPY #F9EBEA
+}
+
+X --> INT42 : "x = 42"
+Y --> INT42 : "y = x\n(ta sama referencja)"
+A --> LIST : "a = [1,2,3]"
+B --> LIST : "b = a\n(współdzielona referencja!)"
+
+note bottom of LIST
+  a is b → True
+  modyfikacja przez b
+  zmienia też a!
+end note
+
+note bottom of LIST_COPY
+  b = a.copy()
+  a is b → False
+  niezależne kopie
+end note
+
+@enduml
+

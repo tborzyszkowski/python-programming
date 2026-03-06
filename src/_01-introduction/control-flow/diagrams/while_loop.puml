@@ -1,0 +1,44 @@
+@startuml while_loop
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+
+title Pętla while w Pythonie
+
+start
+
+:Sprawdź warunek;
+
+while (warunek True?) is (tak)
+  if (continue?) then (tak)
+    note right: wróć do sprawdzenia warunku
+  else (nie)
+    if (break?) then (tak)
+      break
+    else (nie)
+      :Wykonaj ciało pętli;
+    endif
+  endif
+endwhile (nie)
+
+if (break użyty?) then (nie)
+  :Blok else\n(opcjonalny);
+endif
+
+:dalszy kod;
+
+stop
+
+note right
+  while warunek:
+      ciało
+  else:
+      po pętli (bez break)
+
+  Typowe wzorce:
+  - while True: ... break
+  - while len(kolejka) > 0
+  - while not koniec
+end note
+
+@enduml
+

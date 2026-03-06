@@ -1,0 +1,29 @@
+@startuml script_vs_module
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #333333
+skinparam rectangleBackgroundColor #D6EAF8
+
+title Skrypt vs. Moduł – różnica w zachowaniu __name__
+
+package "Uruchomienie jako skrypt: python plik.py" {
+    rectangle "plik.py" as SCRIPT
+    note right of SCRIPT
+      __name__ == "__main__"
+      → blok if __name__ == "__main__"
+        JEST wykonywany
+    end note
+}
+
+package "Import jako moduł: import plik" {
+    rectangle "plik.py" as MOD
+    rectangle "main.py\n(importujący)" as MAIN
+    MAIN --> MOD : import
+    note right of MOD
+      __name__ == "plik"
+      → blok if __name__ == "__main__"
+        NIE jest wykonywany
+    end note
+}
+
+@enduml
+

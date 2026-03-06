@@ -1,0 +1,14 @@
+# Zależności dla całego repozytorium python-programming
+# Instalacja: pip install -r requirements.txt
+
+# Testy
+pytest>=7.4
+pytest-cov>=4.1          # opcjonalnie: pokrycie kodu
+
+# Diagramy PlantUML (generowanie PNG przez serwer plantuml.com)
+plantuml>=0.3
+
+# Jakość kodu (opcjonalnie)
+# ruff>=0.4
+# mypy>=1.0
+

@@ -2,6 +2,12 @@
 Testy jednostkowe dla funkcji w module 01-definition.
 Uruchomienie: pytest
 """
+
+import pathlib
+import sys
+
+sys.path.append(str(pathlib.Path(__file__).parent))
+
 from basic_functions import powitaj, oblicz_pole_trojkata
 
 

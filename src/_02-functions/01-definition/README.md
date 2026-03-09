@@ -95,6 +95,40 @@ def zrob_cos_pozniej():
 
 ---
 
+## Większy przykład (dla studentów I stopnia)
+
+Zobacz kompletny mini-projekt:
+- [`examples/student_tools.py`](examples/student_tools.py) – walidacja ocen, średnia ważona ECTS, decyzja stypendialna i raport tekstowy.
+
+Uruchomienie:
+
+```bash
+python 01-definition/examples/student_tools.py
+```
+
+---
+
+## Zadania do samodzielnego rozwiązania
+
+Pliki zadań:
+- [`exercises/tasks.py`](exercises/tasks.py)
+- [`exercises/solutions_definition.py`](exercises/solutions_definition.py)
+- [`exercises/test_solutions.py`](exercises/test_solutions.py)
+
+```bash
+pytest 01-definition/exercises/test_solutions.py -v
+```
+
+### Lista zadań
+
+1. `normalizuj_imie(imie)` – oczyszczanie i normalizacja zapisu imienia.
+2. `bezpieczne_dzielenie(a, b, domyslna)` – obsługa dzielenia przez zero.
+3. `policz_srednia(oceny)` – średnia arytmetyczna z walidacją wejścia.
+4. `opisz_studenta(imie, indeks, kierunek)` – formatowanie opisu tekstowego.
+5. `wyznacz_range(liczby)` – zwrot min, max i zakresu wartości.
+
+---
+
 ## Referencje
 
 ### Literatura
@@ -106,4 +140,3 @@ def zrob_cos_pozniej():
 - [Defining Functions (Python Docs)](https://docs.python.org/3/tutorial/controlflow.html#defining-functions)
 - [PEP 257 – Docstring Conventions](https://peps.python.org/pep-0257/)
 - [PEP 484 – Type Hints](https://peps.python.org/pep-0484/)
-

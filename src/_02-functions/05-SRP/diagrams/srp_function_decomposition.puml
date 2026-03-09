@@ -1,0 +1,24 @@
+@startuml
+skinparam backgroundColor white
+
+title SRP dla funkcji - rozbicie odpowiedzialnosci
+
+rectangle "process_student_record(line)" as orchestrator #E6F2FF
+
+rectangle "parse_student_line(line)" as parser #FFF2CC
+rectangle "validate_score(score)" as validator #FCE4D6
+rectangle "compute_average(scores)" as calculator #E2F0D9
+rectangle "classify_result(avg)" as classifier #D9E1F2
+rectangle "build_summary(name, avg, cls)" as formatter #F4CCCC
+
+orchestrator --> parser : parsowanie
+orchestrator --> validator : walidacja
+orchestrator --> calculator : obliczenia
+orchestrator --> classifier : klasyfikacja
+orchestrator --> formatter : format raportu
+
+note bottom
+Kazda funkcja ma jeden powod do zmiany.
+end note
+@enduml
+

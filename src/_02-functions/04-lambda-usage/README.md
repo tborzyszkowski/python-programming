@@ -76,6 +76,41 @@ Analiza:
 
 ---
 
+## Większy przykład (dla studentów I stopnia)
+
+- [`examples/data_pipeline.py`](examples/data_pipeline.py) – pełny pipeline danych transakcyjnych: filtrowanie, mapowanie, agregacja i ranking klientów.
+- [`examples/apihelper.py`](examples/apihelper.py) – introspekcja obiektu i dynamiczne formatowanie dokumentacji metod.
+
+Uruchomienie:
+
+```bash
+python 04-lambda-usage/examples/data_pipeline.py
+python 04-lambda-usage/examples/apihelper.py
+```
+
+---
+
+## Zadania do samodzielnego rozwiązania
+
+Pliki zadań:
+- [`exercises/tasks.py`](exercises/tasks.py)
+- [`exercises/solutions_lambda_usage.py`](exercises/solutions_lambda_usage.py)
+- [`exercises/test_solutions.py`](exercises/test_solutions.py)
+
+```bash
+pytest 04-lambda-usage/exercises/test_solutions.py -v
+```
+
+### Lista zadań
+
+1. `sortuj_produkty(produkty, klucz)` – sortowanie listy słowników po zadanym polu.
+2. `filtruj_transakcje(transakcje, prog)` – filtrowanie po progu kwoty.
+3. `mapuj_kwoty_brutto(transakcje, vat)` – mapowanie kwot netto na brutto.
+4. `agreguj_kwoty(transakcje)` – redukcja listy transakcji do jednej sumy.
+5. `ranking_studentow(studenci)` – ranking według średniej malejąco.
+
+---
+
 ## Referencje
 
 ### Literatura
@@ -85,4 +120,3 @@ Analiza:
 ### Źródła internetowe
 - [Functional Programming HOWTO (Python Docs)](https://docs.python.org/3/howto/functional.html)
 - [List Comprehensions vs Map/Filter (Real Python)](https://realpython.com/list-comprehension-python/#list-comprehensions-vs-map-and-filter)
-

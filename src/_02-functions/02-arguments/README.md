@@ -83,6 +83,39 @@ print(wynik2)  # 24
 
 ---
 
+## Większy przykład (dla studentów I stopnia)
+
+- [`examples/cli_dispatcher.py`](examples/cli_dispatcher.py) – prosty dispatcher komend (`add`, `mul`, `greet`) pokazujący praktyczne użycie `*args` i `**kwargs`.
+
+Uruchomienie:
+
+```bash
+python 02-arguments/examples/cli_dispatcher.py
+```
+
+---
+
+## Zadania do samodzielnego rozwiązania
+
+Pliki zadań:
+- [`exercises/tasks.py`](exercises/tasks.py)
+- [`exercises/solutions_arguments.py`](exercises/solutions_arguments.py)
+- [`exercises/test_solutions.py`](exercises/test_solutions.py)
+
+```bash
+pytest 02-arguments/exercises/test_solutions.py -v
+```
+
+### Lista zadań
+
+1. `policz_statystyki(*args)` – statystyki dla dowolnej liczby argumentów.
+2. `zbuduj_url(base, **query)` – budowanie query string z argumentów nazwanych.
+3. `skaluj_wyniki(*args, mnoznik=...)` – argumenty pozycyjne + nazwane.
+4. `polacz_konfiguracje(**kwargs)` – merge domyślnych i nadpisanych ustawień.
+5. `wywolaj_funkcje(func, *args, **kwargs)` – przekazywanie i wywołanie funkcji.
+
+---
+
 ## Referencje
 
 ### Literatura
@@ -92,4 +125,3 @@ print(wynik2)  # 24
 ### Źródła internetowe
 - [Arbitrary Argument Lists (Python Docs)](https://docs.python.org/3/tutorial/controlflow.html#arbitrary-argument-lists)
 - [PEP 3102 – Keyword-Only Arguments](https://peps.python.org/pep-3102/)
-

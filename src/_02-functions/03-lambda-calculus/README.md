@@ -80,6 +80,39 @@ print(wynik)  # 11
 
 ---
 
+## Większy przykład (dla studentów I stopnia)
+
+- [`examples/lambda_playground.py`](examples/lambda_playground.py) – kompozycja funkcji, pipeline transformacji i praca na listach danych.
+
+Uruchomienie:
+
+```bash
+python 03-lambda-calculus/examples/lambda_playground.py
+```
+
+---
+
+## Zadania do samodzielnego rozwiązania
+
+Pliki zadań:
+- [`exercises/tasks.py`](exercises/tasks.py)
+- [`exercises/solutions_lambda.py`](exercises/solutions_lambda.py)
+- [`exercises/test_solutions.py`](exercises/test_solutions.py)
+
+```bash
+pytest 03-lambda-calculus/exercises/test_solutions.py -v
+```
+
+### Lista zadań
+
+1. `zastosuj(f, x)` – aplikacja funkcji do argumentu.
+2. `stworz_mnoznik(n)` – domknięcie z lambdą.
+3. `kompozycja(f, g)` – składanie funkcji `f(g(x))`.
+4. `curry_add(x)` – podstawy currying.
+5. `mapuj_i_filtruj(...)` – łączenie mapowania i filtrowania.
+
+---
+
 ## Referencje
 
 ### Literatura
@@ -91,4 +124,3 @@ print(wynik)  # 11
 - [Lambda Expressions (Python Docs)](https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions)
 - [A Tutorial Introduction to the Lambda Calculus](http://www.inf.fu-berlin.de/lehre/WS03/alpi/lambda.pdf)
 - [Functional Programming HOWTO (Python Docs)](https://docs.python.org/3/howto/functional.html)
-

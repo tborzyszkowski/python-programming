@@ -1,0 +1,30 @@
+@startuml
+skinparam handwritten true
+skinparam backgroundColor white
+
+title Struktura funkcji w Pythonie
+
+rectangle "Nagłówek (Header)" as H {
+    rectangle "**def**" as Keyword #LightBlue
+    rectangle "nazwa_funkcji" as Name #LightGreen
+    rectangle "(parametr1, parametr2)" as Params #LightYellow
+    rectangle ":" as Colon
+}
+
+rectangle "Ciało (Body)" as B {
+    rectangle "\"\"\"Dokumentacja (docstring)\"\"\"" as Doc #LightGray
+    rectangle "Instrukcja 1" as Code1
+    rectangle "Instrukcja 2" as Code2
+    rectangle "**return** wynik" as Return #LightCoral
+}
+
+Keyword -> Name
+Name -> Params
+Params -> Colon
+Colon --> Doc
+Doc --> Code1
+Code1 --> Code2
+Code2 --> Return
+
+@enduml
+

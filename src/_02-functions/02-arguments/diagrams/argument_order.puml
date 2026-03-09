@@ -1,0 +1,23 @@
+@startuml
+skinparam handwritten true
+skinparam backgroundColor white
+
+title Kolejność argumentów w Pythonie
+
+rectangle "1. Pozycyjne (a, b)" as Pos #LightBlue
+rectangle "2. Domyślne (c=0)" as Def #LightGreen
+rectangle "3. *args" as Args #LightYellow
+rectangle "4. Keyword-Only (*, d=1)" as KwOnly #LightPink
+rectangle "5. **kwargs" as KwArgs #LightCoral
+
+Pos -> Def
+Def -> Args
+Args -> KwOnly
+KwOnly -> KwArgs
+
+note bottom of KwArgs
+  kwargs pije na końcu!
+end note
+
+@enduml
+

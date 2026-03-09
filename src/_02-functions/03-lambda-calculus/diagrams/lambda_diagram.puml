@@ -1,0 +1,22 @@
+@startuml
+skinparam handwritten true
+skinparam backgroundColor white
+
+title Funkcja Lambda
+
+rectangle "lambda" as Kw #LightBlue
+rectangle "x, y" as Params #LightGreen
+rectangle ":" as Colon
+rectangle "x + y" as Body #LightYellow
+
+Kw -> Params
+Params -> Colon
+Colon -> Body
+
+note bottom of Body
+  Tylko jedno wyrażenie!
+  (jest automatycznie zwracane)
+end note
+
+@enduml
+

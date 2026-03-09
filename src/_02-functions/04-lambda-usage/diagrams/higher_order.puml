@@ -1,0 +1,26 @@
+@startuml
+skinparam handwritten true
+skinparam backgroundColor white
+
+title Map / Filter / Reduce
+
+rectangle "Dane wejściowe\n[1, 2, 3, 4]" as Input #LightGray
+
+rectangle "**map(lambda x: x*2)**" as Map #LightGreen
+rectangle "**filter(lambda x: x>2)**" as Filter #LightYellow
+rectangle "**reduce(lambda a,b: a+b)**" as Reduce #LightBlue
+
+rectangle "Wynik Map\n[2, 4, 6, 8]" as ResMap
+rectangle "Wynik Filter\n[3, 4]" as ResFilter
+rectangle "Wynik Reduce\n10" as ResReduce
+
+Input -> Map
+Input -> Filter
+Input -> Reduce
+
+Map -> ResMap
+Filter -> ResFilter
+Reduce -> ResReduce
+
+@enduml
+

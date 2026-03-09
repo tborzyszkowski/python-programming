@@ -47,9 +47,11 @@ python -m venv .venv
 ```powershell
 # Z katalogu głównego projektu (Windows):
 .venv\Scripts\python.exe -m pytest src\_01-introduction -v
+.venv\Scripts\python.exe -m pytest src\_02-functions -v
 
 # Po aktywacji venv (każdy system):
 python -m pytest src/_01-introduction -v
+python -m pytest src/_02-functions -v
 ```
 
 ### 4. Wygeneruj diagramy PNG z plików PlantUML
@@ -57,7 +59,25 @@ python -m pytest src/_01-introduction -v
 ```powershell
 # Wymaga połączenia z Internetem (używa plantuml.com)
 .venv\Scripts\python.exe src\_01-introduction\generate_diagrams.py
+.venv\Scripts\python.exe src\_02-functions\generate_diagrams.py
 ```
+
+## Moduły kursu
+
+- [`src/_01-introduction/README.md`](src/_01-introduction/README.md) - wprowadzenie do Pythona 3 (typy, sterowanie, uruchamianie, mutowalność)
+- [`src/_02-functions/README.md`](src/_02-functions/README.md) - funkcje w Pythonie 3 (definicje, argumenty, lambda, SRP)
+
+## Jak wybrać moduł na start?
+
+Dla studentów I roku polecana kolejność pracy:
+
+1. **`_01-introduction`** - fundamenty składni i modelu działania Pythona.
+2. **`_02-functions`** - budowanie modularnego kodu, funkcje wyższego rzędu i dobre praktyki projektowe.
+
+Sugerowany rytm nauki:
+- najpierw przeczytaj `README.md` wybranego tematu,
+- uruchom przykłady z `examples/`,
+- na końcu rozwiąż zadania z `exercises/` i sprawdź je testami `pytest`.
 
 ## Struktura projektu
 
@@ -70,15 +90,23 @@ python-programming/
 │   ├── setup_venv.ps1            # skrypt konfiguracyjny (Windows PowerShell)
 │   └── setup_venv.sh             # skrypt konfiguracyjny (Linux/macOS)
 └── src/
-    └── _01-introduction/
+    ├── _01-introduction/
+    │   ├── pytest.ini            # konfiguracja pytest dla modułu
+    │   ├── requirements.txt      # zależności modułu
+    │   ├── generate_diagrams.py  # generator PNG z .puml
+    │   ├── control-flow/         # instrukcje sterujące
+    │   ├── data-types/           # typy danych
+    │   ├── interpreters/         # kompilatory i interpretery
+    │   ├── mutability/           # mutowalność / niemutowalność
+    │   └── running-python/       # sposoby uruchamiania kodu
+    └── _02-functions/
         ├── pytest.ini            # konfiguracja pytest dla modułu
-        ├── requirements.txt      # zależności modułu
         ├── generate_diagrams.py  # generator PNG z .puml
-        ├── control-flow/         # instrukcje sterujące
-        ├── data-types/           # typy danych
-        ├── interpreters/         # kompilatory i interpretery
-        ├── mutability/           # mutowalność / niemutowalność
-        └── running-python/       # sposoby uruchamiania kodu
+        ├── 01-definition/        # definicja funkcji
+        ├── 02-arguments/         # argumenty pozycyjne, nazwane, *args, **kwargs
+        ├── 03-lambda-calculus/   # rachunek lambda i podstawy teoretyczne
+        ├── 04-lambda-usage/      # praktyczne użycie lambda (map/filter/reduce)
+        └── 05-srp/               # zasada pojedynczej odpowiedzialności dla funkcji
 ```
 
 ## Zależności

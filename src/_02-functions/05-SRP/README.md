@@ -91,8 +91,8 @@ Tu kazda funkcja odpowiada za jedno zadanie.
 Uruchomienie:
 
 ```bash
-python 05-SRP/examples/monolith_vs_srp.py
-python 05-SRP/examples/grade_report_pipeline.py
+python 05-srp/examples/monolith_vs_srp.py
+python 05-srp/examples/grade_report_pipeline.py
 ```
 
 ---
@@ -105,7 +105,7 @@ Pliki zadan:
 - [`exercises/test_solutions.py`](exercises/test_solutions.py)
 
 ```bash
-pytest 05-SRP/exercises/test_solutions.py -v
+pytest 05-srp/exercises/test_solutions.py -v
 ```
 
 ### Lista zadan
@@ -130,4 +130,3 @@ pytest 05-SRP/exercises/test_solutions.py -v
 - [The Single Responsibility Principle - Martin](https://en.wikipedia.org/wiki/Single-responsibility_principle)
 - [SOLID Principles in Python (Real Python)](https://realpython.com/solid-principles-python/)
 - [Python Testing with pytest](https://docs.pytest.org/)
-

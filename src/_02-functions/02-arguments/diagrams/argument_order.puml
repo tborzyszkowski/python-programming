@@ -1,5 +1,5 @@
 @startuml
-skinparam handwritten true
+'skinparam handwritten true
 skinparam backgroundColor white
 
 title Kolejność argumentów w Pythonie

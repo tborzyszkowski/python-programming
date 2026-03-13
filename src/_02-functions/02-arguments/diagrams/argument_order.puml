@@ -16,7 +16,7 @@ Args -> KwOnly
 KwOnly -> KwArgs
 
 note bottom of KwArgs
-  kwargs pije na końcu!
+  kwargs na końcu!
 end note
 
 @enduml

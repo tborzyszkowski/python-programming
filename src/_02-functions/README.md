@@ -17,6 +17,7 @@ Każdy temat umieszczony jest w osobnym podkatalogu zawierającym:
 | [03-lambda-calculus/](03-lambda-calculus/README.md) | Rachunek lambda | Podstawy teoretyczne (Alonzo Church), funkcje anonimowe `lambda`, ograniczenia (jedno wyrażenie) |
 | [04-lambda-usage/](04-lambda-usage/README.md) | Zastosowanie lambd | Sortowanie z kluczem (`key`), funkcje wyższego rzędu: `map`, `filter`, `reduce`, przykład introspekcji (API Helper) |
 | [05-srp/](05-srp/README.md) | SRP dla funkcji | Zasada pojedynczej odpowiedzialności, refaktoryzacja funkcji, podział na kroki parse/validate/compute/format |
+| [06-separation-of-concerns/](06-separation-of-concerns/README.md) | Separation of Concerns | Koncepcja Dijkstry, architektura warstwowa (model/prezentacja/interakcja), testowalnosc i relacja z SRP |
 
 ## Wymagania
 

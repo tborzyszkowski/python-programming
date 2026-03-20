@@ -1,0 +1,18 @@
+@startuml
+skinparam backgroundColor white
+
+title SoC a testowalnosc
+
+rectangle "Model tests\n- deterministic\n- no mocks\n- edge cases" as tmodel #D9EAD3
+rectangle "Presentation tests\n- string format\n- stable snapshots" as tpresentation #FCE5CD
+rectangle "Interaction tests\n- flow + error handling\n- integration level" as tinteraction #CFE2F3
+
+tinteraction --> tmodel : korzysta posrednio
+tinteraction --> tpresentation : weryfikuje koncowy output
+
+note bottom
+Im lepsza separacja warstw,
+tym tansze i szybsze testy.
+end note
+@enduml
+

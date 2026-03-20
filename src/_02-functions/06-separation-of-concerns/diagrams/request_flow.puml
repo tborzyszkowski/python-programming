@@ -1,0 +1,19 @@
+@startuml
+skinparam backgroundColor white
+
+title Przeplyw danych: input -> model -> presentation
+
+actor Student as user
+participant "Interaction" as inter
+participant "Model" as model
+participant "Presentation" as present
+
+user -> inter : raw line
+inter -> model : parse + validate + calculate
+model --> inter : structured result
+inter -> present : render(result)
+present --> inter : text report
+inter --> user : output
+
+@enduml
+

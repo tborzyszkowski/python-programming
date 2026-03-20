@@ -1,0 +1,24 @@
+@startuml
+skinparam backgroundColor white
+
+title Separation of Concerns - architektura warstwowa
+
+rectangle "Interaction layer\n(UI/CLI/API handlers)" as interaction #E6F2FF
+rectangle "Presentation layer\n(formatting, view models)" as presentation #FFF2CC
+rectangle "Model layer\n(pure calculations, domain rules)" as model #E2F0D9
+
+interaction --> presentation : przekazuje dane wyjsciowe
+interaction --> model : wywoluje logike domenowa
+presentation --> model : nie modyfikuje modelu
+
+note right of model
+Brak input()/print() w modelu.
+Latwe testy jednostkowe.
+end note
+
+note bottom
+Kierunek zaleznosci: warstwy zewnetrzne
+zalezne od warstw wewnetrznych.
+end note
+@enduml
+

@@ -1,0 +1,24 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="joblib" />
+          <option value="lark" />
+          <option value="llvmlite" />
+          <option value="numba" />
+          <option value="patsy" />
+          <option value="polars" />
+          <option value="polars-runtime-32" />
+          <option value="rfc3987-syntax" />
+          <option value="scikit-dimension" />
+          <option value="scikit-learn" />
+          <option value="statsmodels" />
+          <option value="threadpoolctl" />
+          <option value="tqdm" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

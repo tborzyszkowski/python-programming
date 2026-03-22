@@ -1,0 +1,22 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+start
+:import x;
+if (x in sys.modules?) then (yes)
+  :use cached module;
+  stop
+else (no)
+  :iterate finders (meta_path);
+  :search sys.path entries;
+  if (spec found?) then (yes)
+    :load + execute module;
+    :store in sys.modules;
+  else (no)
+    :raise ModuleNotFoundError;
+  endif
+endif
+stop
+@enduml
+

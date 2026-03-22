@@ -44,4 +44,5 @@ def raport_studenta(imie: str, oceny: list[float], ects: list[int]) -> str:
 
 if __name__ == "__main__":
     print(raport_studenta("Anna", [5.0, 4.5, 4.0, 5.0], [6, 5, 4, 3]))
+    print(raport_studenta("Zdziś", [3.0, 3.0, 4.0, 2.0], [6, 5, 4, 3]))
 

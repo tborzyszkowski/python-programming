@@ -1,0 +1,13 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+start
+:import module.py;
+:parse source;
+:compile to bytecode;
+:write module.cpython-XY.pyc in __pycache__;
+:execute module body;
+stop
+@enduml
+

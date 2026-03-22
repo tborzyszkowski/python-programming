@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+package "Python standard library" {
+  [pathlib]
+  [collections]
+  [itertools]
+  [json]
+}
+
+[pathlib] --> [filesystem paths]
+[collections] --> [counting and queues]
+[itertools] --> [iterator algebra]
+[json] --> [serialization]
+@enduml
+

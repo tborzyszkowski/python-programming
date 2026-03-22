@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "module A" as A
+rectangle "module B" as B
+rectangle "shared" as S
+
+A --> B : imports
+B --> A : imports (cycle risk)
+A --> S : refactor target
+B --> S : refactor target
+
+rectangle "runtime loader" as L
+L --> "importlib.import_module(name)"
+@enduml
+

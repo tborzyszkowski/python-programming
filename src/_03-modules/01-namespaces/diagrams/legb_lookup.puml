@@ -1,0 +1,23 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+rectangle "Name lookup" as lookup {
+  rectangle "Local" as L
+  rectangle "Enclosing" as E
+  rectangle "Global" as G
+  rectangle "Builtins" as B
+}
+
+L -down-> E : not found
+E -down-> G : not found
+G -down-> B : not found
+B -down-> lookup : NameError
+
+note right of L
+First place checked
+inside current function
+end note
+
+@enduml
+

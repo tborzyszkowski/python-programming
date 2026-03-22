@@ -1,0 +1,15 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+start
+if (Run: python file.py?) then (yes)
+  :__name__ = "__main__";
+  :execute CLI/demo block;
+else (import file)
+  :__name__ = module name;
+  :define symbols only;
+endif
+stop
+@enduml
+

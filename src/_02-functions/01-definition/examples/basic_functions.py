@@ -48,6 +48,10 @@ if __name__ == "__main__":
     witaj_kw = powitaj(wiek=30, imie="Celina")
     print(witaj_kw)
 
+    # Paramtry złych typów
+    witaj_zly = powitaj(wiek="30", imie=123)
+    print(witaj_zly)
+
     print("-" * 30)
     pole = oblicz_pole_trojkata(10, 5)
     print(f"Pole trójkąta (a=10, h=5): {pole}")

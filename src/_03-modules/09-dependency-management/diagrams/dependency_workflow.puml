@@ -1,0 +1,13 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+start
+:Create venv;
+:Install dependencies;
+:Run tests;
+:Pin versions (optional lock);
+:Share requirements/pyproject;
+stop
+@enduml
+

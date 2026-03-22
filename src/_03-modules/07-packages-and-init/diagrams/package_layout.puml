@@ -1,0 +1,21 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+folder "examples" {
+  folder "basic_pkg" {
+    file "__init__.py"
+    file "math_ops.py"
+  }
+  folder "school" {
+    folder "core" {
+      file "grade_model.py"
+    }
+    folder "ui" {
+      file "renderer.py"
+    }
+  }
+}
+
+@enduml
+

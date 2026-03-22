@@ -48,10 +48,12 @@ python -m venv .venv
 # Z katalogu głównego projektu (Windows):
 .venv\Scripts\python.exe -m pytest src\_01-introduction -v
 .venv\Scripts\python.exe -m pytest src\_02-functions -v
+.venv\Scripts\python.exe -m pytest src\_03-modules -c src\_03-modules\pytest.ini -v
 
 # Po aktywacji venv (każdy system):
 python -m pytest src/_01-introduction -v
 python -m pytest src/_02-functions -v
+python -m pytest src/_03-modules -c src/_03-modules/pytest.ini -v
 ```
 
 ### 4. Wygeneruj diagramy PNG z plików PlantUML
@@ -60,12 +62,14 @@ python -m pytest src/_02-functions -v
 # Wymaga połączenia z Internetem (używa plantuml.com)
 .venv\Scripts\python.exe src\_01-introduction\generate_diagrams.py
 .venv\Scripts\python.exe src\_02-functions\generate_diagrams.py
+.venv\Scripts\python.exe src\_03-modules\generate_diagrams.py
 ```
 
 ## Moduły kursu
 
 - [`src/_01-introduction/README.md`](src/_01-introduction/README.md) - wprowadzenie do Pythona 3 (typy, sterowanie, uruchamianie, mutowalność)
 - [`src/_02-functions/README.md`](src/_02-functions/README.md) - funkcje w Pythonie 3 (definicje, argumenty, lambda, SRP)
+- [`src/_03-modules/README.md`](src/_03-modules/README.md) - moduly, importy, pakiety, pycache i zarzadzanie zaleznosciami
 
 ## Jak wybrać moduł na start?
 
@@ -73,6 +77,7 @@ Dla studentów I roku polecana kolejność pracy:
 
 1. **`_01-introduction`** - fundamenty składni i modelu działania Pythona.
 2. **`_02-functions`** - budowanie modularnego kodu, funkcje wyższego rzędu i dobre praktyki projektowe.
+3. **`_03-modules`** - praca z modulami i pakietami, import system i dobre praktyki ekosystemu.
 
 Sugerowany rytm nauki:
 - najpierw przeczytaj `README.md` wybranego tematu,
@@ -99,7 +104,7 @@ python-programming/
     │   ├── interpreters/         # kompilatory i interpretery
     │   ├── mutability/           # mutowalność / niemutowalność
     │   └── running-python/       # sposoby uruchamiania kodu
-    └── _02-functions/
+    ├── _02-functions/
         ├── pytest.ini            # konfiguracja pytest dla modułu
         ├── generate_diagrams.py  # generator PNG z .puml
         ├── 01-definition/        # definicja funkcji
@@ -107,6 +112,18 @@ python-programming/
         ├── 03-lambda-calculus/   # rachunek lambda i podstawy teoretyczne
         ├── 04-lambda-usage/      # praktyczne użycie lambda (map/filter/reduce)
         └── 05-srp/               # zasada pojedynczej odpowiedzialności dla funkcji
+    └── _03-modules/
+        ├── pytest.ini            # konfiguracja pytest dla modulu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-namespaces/        # przestrzenie nazw i LEGB
+        ├── 02-module-vs-script/  # __name__ == "__main__"
+        ├── 03-stdlib-batteries/  # biblioteka standardowa
+        ├── 04-imports-and-symbol-tables/
+        ├── 05-import-mechanism-pythonpath/
+        ├── 06-compilation-pycache/
+        ├── 07-packages-and-init/
+        ├── 08-advanced-import-topics/
+        └── 09-dependency-management/
 ```
 
 ## Zależności

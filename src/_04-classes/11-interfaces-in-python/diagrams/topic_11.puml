@@ -1,0 +1,7 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 11 - Interfejsy w Pythonie (`ABC` i `Protocol`)
+        interface PaymentProcessor
+class CardProcessor
+PaymentProcessor <|.. CardProcessor
+@enduml

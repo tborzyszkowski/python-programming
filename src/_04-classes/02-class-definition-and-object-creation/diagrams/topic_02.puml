@@ -1,0 +1,10 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 02 - Definicja klasy i tworzenie obiektu
+        class BankAccount {
+  +owner: str
+  +balance: float
+  +deposit(amount)
+  +withdraw(amount)
+}
+@enduml

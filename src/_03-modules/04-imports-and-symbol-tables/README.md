@@ -3,19 +3,19 @@
 ## Cel
 
 Praktycznie porównać:
-- `import modul` vs `from modul import symbol`,
+- `import module_name` vs `from module_name import symbol`,
 - importy bezwzględne i względne,
 - przestrzeń `builtins`,
 - działanie `globals()` i `locals()` oraz czas życia nazw.
 
 ## Teoria w skrócie
 
-### `import modul`
-- tworzy jedną nazwę (`modul`) w bieżącej przestrzeni,
-- wywołanie jest jawne (`modul.funkcja()`),
+### `import module_name`
+- tworzy jedną nazwę (`module_name`) w bieżącej przestrzeni,
+- wywołanie jest jawne (`module_name.funkcja()`),
 - zwykle lepsza czytelność i mniejsze ryzyko kolizji.
 
-### `from modul import symbol`
+### `from module_name import symbol`
 - importuje konkretny symbol bezpośrednio,
 - kod jest krótszy (`symbol()`),
 - łatwiej o kolizję nazw przy dużych plikach.
@@ -103,7 +103,7 @@ Dla studentów: na początku trzymaj się importów bezwzględnych, bo są prost
 
 ## Pytania kontrolne
 
-1. Kiedy `import modul` jest lepsze od `from modul import symbol`?
+1. Kiedy `import module_name` jest lepsze od `from module_name import symbol`?
 2. Dlaczego `len` działa mimo braku w `globals()`?
 3. Co staje się z lokalnymi nazwami po zakończeniu funkcji?
 

@@ -77,7 +77,7 @@ Plik `examples/package_demo.py` łączy oba pakiety i pokazuje prosty przepływ:
 
 Możliwe są pakiety bez `__init__.py`, ale:
 - są bardziej zaawansowane,
-- wymagają dobrego zrozumienia import system,
+- wymagają dobrego zrozumienia systemu importu,
 - na początku kursu zwykle wygodniej stosować klasyczne pakiety z `__init__.py`.
 
 ## Powiązane zadania

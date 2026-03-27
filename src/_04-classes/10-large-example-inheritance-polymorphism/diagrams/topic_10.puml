@@ -1,0 +1,11 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 10 - Większy przykład: system ocen
+        abstract class GradePolicy
+class MeanPolicy
+class BestOfTwoPolicy
+class Course
+GradePolicy <|-- MeanPolicy
+GradePolicy <|-- BestOfTwoPolicy
+Course --> GradePolicy
+@enduml

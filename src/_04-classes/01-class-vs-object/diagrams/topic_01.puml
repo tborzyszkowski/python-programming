@@ -1,0 +1,14 @@
+@startuml
+skinparam classAttributeIconSize 0
+title 01 - Klasa a obiekt: intuicja i historia
+
+class Student {
+  +name: str
+  +year: int
+}
+
+note right of Student
+Klasa opisuje typ.
+Obiekt to konkretna instancja.
+end note
+@enduml

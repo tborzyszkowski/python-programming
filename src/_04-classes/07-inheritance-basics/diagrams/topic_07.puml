@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 07 - Dziedziczenie w OOP i w Pythonie
+        class Vehicle
+class Bike
+class Car
+Vehicle <|-- Bike
+Vehicle <|-- Car
+@enduml

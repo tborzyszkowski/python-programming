@@ -7,7 +7,7 @@ Pokazać, że Python posiada bogaty zestaw gotowych narzędzi: pracę z plikami,
 ## Co oznacza batteries included?
 
 W wielu językach trzeba od razu instalować zewnętrzne biblioteki do podstawowych zadań.
-W Pythonie dużą część tych potrzeb pokrywa standard library, co daje:
+W Pythonie dużą część tych potrzeb pokrywa biblioteka standardowa, co daje:
 - mniej zależności,
 - mniejsze ryzyko konfliktów wersji,
 - szybszy start projektu.

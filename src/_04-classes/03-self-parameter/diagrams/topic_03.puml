@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 03 - Rola `self` w Pythonie
+        class Counter {
+  +value: int
+  +increment()
+}
+note right: self => konkretna instancja
+@enduml

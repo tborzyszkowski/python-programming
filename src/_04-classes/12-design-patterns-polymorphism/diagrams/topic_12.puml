@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 12 - Wzorce projektowe oparte na polimorfizmie i dziedziczeniu
+        abstract class DiscountStrategy
+class StudentDiscount
+class NoDiscount
+DiscountStrategy <|-- StudentDiscount
+DiscountStrategy <|-- NoDiscount
+@enduml

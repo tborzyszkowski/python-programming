@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 05 - Komponenty prywatne w Pythonie
+        class TemperatureSensor {
+  -_celsius: float
+  -__calibration_offset: float
+  +read()
+}
+@enduml

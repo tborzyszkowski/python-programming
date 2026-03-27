@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 08 - Dziedziczenie wielokrotne i MRO
+        class LoggerMixin
+class TimestampMixin
+class Event
+LoggerMixin <|-- Event
+TimestampMixin <|-- Event
+@enduml

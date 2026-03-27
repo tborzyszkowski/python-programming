@@ -1,0 +1,9 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 09 - Polimorfizm: jedna operacja, wiele implementacji
+        abstract class Shape
+class Rectangle
+class Circle
+Shape <|-- Rectangle
+Shape <|-- Circle
+@enduml

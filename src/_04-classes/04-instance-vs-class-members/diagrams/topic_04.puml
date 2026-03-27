@@ -1,0 +1,10 @@
+        @startuml
+        skinparam classAttributeIconSize 0
+        title 04 - Komponenty instancyjne i klasowe/statyczne
+        class Session {
+  {static} active_count
+  +user: str
+  {class} active_sessions()
+  {static} is_valid_username(name)
+}
+@enduml

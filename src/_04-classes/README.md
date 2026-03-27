@@ -51,3 +51,28 @@ python src/_04-classes/generate_diagrams.py
 - Python Docs - `typing.Protocol`: https://docs.python.org/3/library/typing.html#typing.Protocol
 - E. Gamma i in., *Design Patterns*, Addison-Wesley.
 - B. Meyer, *Object-Oriented Software Construction*.
+
+## Jak pracować z modułem na ćwiczeniach
+
+Rekomendowany rytm pracy dla każdego tematu:
+1. przeczytaj sekcję `Cel` i `Teoria` w README tematu,
+2. uruchom kod z `examples/` i zmodyfikuj 1-2 elementy,
+3. rozwiąż zadanie z `exercises/tasks.py`,
+4. porównaj z `solutions_XX.py`,
+5. odpowiedz pisemnie na pytania egzaminacyjne.
+
+## Scenariusz 90-minutowych zajęć
+
+- 15 min: kontekst pojęciowy i historyczny,
+- 25 min: kod „na żywo” i analiza decyzji projektowych,
+- 30 min: mini-lab krok po kroku,
+- 15 min: omówienie testów i typowych błędów,
+- 5 min: pytania egzaminacyjne na podsumowanie.
+
+## Kryteria oceny prac studenckich
+
+- poprawność działania i przejście testów,
+- czytelność kodu (nazwy, podział odpowiedzialności),
+- adekwatne użycie mechanizmów OOP,
+- umiejętność uzasadnienia wyborów projektowych,
+- jakość refaktoryzacji po informacji zwrotnej.

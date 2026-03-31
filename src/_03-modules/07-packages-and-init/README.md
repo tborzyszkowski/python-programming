@@ -38,6 +38,8 @@ __all__ = ["add", "mean"]
 
 Interpretacja:
 - `__init__.py` definiuje, co jest „oficjalnym” API pakietu,
+- `__all__` to lista nazw publicznych; określa, co ma być eksportowane przy `from basic_pkg import *`,
+- elementy spoza `__all__` traktujemy jako wewnętrzne (nie są domyślnie eksportowane „gwiazdką”),
 - użytkownik pakietu importuje wygodnie: `from basic_pkg import add`.
 
 ### Większy przykład: `examples/school/`
@@ -79,6 +81,66 @@ Możliwe są pakiety bez `__init__.py`, ale:
 - są bardziej zaawansowane,
 - wymagają dobrego zrozumienia systemu importu,
 - na początku kursu zwykle wygodniej stosować klasyczne pakiety z `__init__.py`.
+
+### Minimalny przykład (PEP 420)
+
+Załóżmy, że ten sam pakiet logiczny `acme_tools` jest rozdzielony na dwa katalogi źródłowe.
+**Ważne:** w katalogu `acme_tools/` nie ma pliku `__init__.py`.
+
+```text
+examples/namespace_demo/
+  src_a/
+    acme_tools/
+      text_utils.py
+  src_b/
+    acme_tools/
+      math_utils.py
+  main.py
+```
+
+Plik: `examples/namespace_demo/src_a/acme_tools/text_utils.py`
+
+```python
+def shout(message: str) -> str:
+    return message.upper() + "!"
+```
+
+Plik: `examples/namespace_demo/src_b/acme_tools/math_utils.py`
+
+```python
+def square(x: int) -> int:
+    return x * x
+```
+
+Plik: `examples/namespace_demo/main.py`
+
+```python
+from acme_tools.text_utils import shout
+from acme_tools.math_utils import square
+
+
+def main() -> None:
+    print(shout("python"))
+    print(square(7))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Uruchomienie (PowerShell, z katalogu `examples/namespace_demo/`):
+
+```powershell
+$env:PYTHONPATH = "src_a;src_b"
+python .\main.py
+```
+
+Interpretacja:
+- interpreter przeszukuje wszystkie wpisy z `PYTHONPATH`,
+- odnajduje dwa fragmenty tego samego namespace package `acme_tools`,
+- import działa tak, jakby pakiet był „złożony” z wielu lokalizacji.
+
+To mechanizm używany m.in. przy dużych projektach i wtyczkach, gdzie różne części pakietu dostarczane są niezależnie.
 
 ## Powiązane zadania
 

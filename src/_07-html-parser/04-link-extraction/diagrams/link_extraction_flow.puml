@@ -1,0 +1,46 @@
+@startuml
+title Przepływ ekstrakcji linków z HTML
+
+skinparam activity {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+skinparam ArrowColor DarkBlue
+
+start
+
+:Wejście: surowy HTML\n+ opcjonalny base_url;
+
+:feed(html)\nHTMLParser tokenizuje strumień;
+
+while (Następny token?) is (tak)
+    if (Tag otwierający?) then (tak)
+        if (tag == "a" ?) then (tak)
+            if (Ma atrybut href?) then (tak)
+                :Zapisz href;
+                :Zbieraj tekst (handle_data)\naż do handle_endtag("a");
+                :Normalizacja URL\nurljoin(base_url, href);
+                if (Schemat do pominięcia?\njavascript: / mailto: / tel:) then (nie)
+                    :Dodaj do wynikowej listy\n(href, tekst_linka);
+                else (tak)
+                    :Pomiń;
+                endif
+            else (nie)
+                :Pomiń <a> bez href;
+            endif
+        else (nie)
+            :Pomiń inny tag;
+        endif
+    else (nie)
+        :Pomiń (data/comment/endtag);
+    endif
+endwhile (nie)
+
+:close() – zakończ parsowanie;
+
+:Wynik: lista (href, anchor_text);
+
+stop
+
+@enduml
+

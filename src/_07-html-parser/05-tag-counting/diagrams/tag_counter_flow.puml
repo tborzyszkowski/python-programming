@@ -1,0 +1,51 @@
+@startuml
+title Przepływ zliczania tagów HTML
+
+skinparam activity {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+skinparam ArrowColor DarkBlue
+
+start
+
+:Wejście: dokument HTML;
+
+:Inicjalizacja:\nCounter(), depth=0, max_depth=0;
+
+:feed(html);
+
+while (Następny token?) is (tak)
+
+    if (handle_starttag?) then (tak)
+        :counter[tag] += 1;
+        if (Nie jest void element?) then (tak)
+            :depth += 1;
+            :max_depth = max(max_depth, depth);
+        else (nie)
+        endif
+
+    elseif (handle_endtag?) then (tak)
+        if (Nie jest void element?) then (tak)
+            :depth -= 1;
+        else (nie)
+        endif
+
+    elseif (handle_startendtag?) then (tak)
+        :counter[tag] += 1;
+
+    elseif (handle_data?) then (tak)
+        :text_length += len(data.strip());
+
+    endif
+
+endwhile (nie)
+
+:close();
+
+:Wynik:\n- Counter (histogram tagów)\n- max_depth (zagnieżdżenie)\n- text_length;
+
+stop
+
+@enduml
+

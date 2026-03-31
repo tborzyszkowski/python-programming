@@ -1,0 +1,49 @@
+@startuml
+title Porównanie parserów HTML w Pythonie
+
+skinparam class {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+
+map "HTMLParser\n(stdlib)" as HP {
+    Instalacja => stdlib ✅
+    Szybkość => Średnia
+    Pamięć => Niska (streaming)
+    API => Callbacks
+    Malformed HTML => ❌ Brak naprawy
+    DOM / drzewo => ❌ Brak
+    CSS selektory => ❌
+    XPath => ❌
+    Streaming => ✅
+    Najlepszy do => Proste ekstrakcje,\nduże pliki, brak zależności
+}
+
+map "BeautifulSoup\n(bs4)" as BS4 {
+    Instalacja => pip install beautifulsoup4
+    Szybkość => Wolniejszy
+    Pamięć => Wysoka (drzewo)
+    API => find / select
+    Malformed HTML => ✅ Tolerancja
+    DOM / drzewo => ✅ Pełne
+    CSS selektory => ✅ .select()
+    XPath => ❌
+    Streaming => ❌
+    Najlepszy do => Web scraping,\nmalformed HTML, prototypy
+}
+
+map "lxml" as LXML {
+    Instalacja => pip install lxml (C)
+    Szybkość => Najszybszy
+    Pamięć => Wysoka (drzewo)
+    API => XPath / CSS
+    Malformed HTML => ✅ Naprawa
+    DOM / drzewo => ✅ Pełne
+    CSS selektory => ✅ .cssselect()
+    XPath => ✅ .xpath()
+    Streaming => Częściowo (iterparse)
+    Najlepszy do => Produkcja, wydajność,\nzłożone zapytania
+}
+
+@enduml
+

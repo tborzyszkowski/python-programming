@@ -1,0 +1,62 @@
+@startuml
+title Hierarchia klas HTMLParser – wzorzec Template Method
+
+skinparam class {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    ArrowColor DarkBlue
+}
+
+abstract class HTMLParser {
+    - __rawdata : str
+    - __cdata_elem : str | None
+    + __init__(convert_charrefs=True)
+    + feed(data: str) : void
+    + close() : void
+    + reset() : void
+    --
+    {abstract} + handle_starttag(tag, attrs)
+    {abstract} + handle_endtag(tag)
+    {abstract} + handle_data(data)
+    {abstract} + handle_comment(data)
+    {abstract} + handle_startendtag(tag, attrs)
+    {abstract} + handle_decl(decl)
+    {abstract} + handle_pi(data)
+    {abstract} + handle_entityref(name)
+    {abstract} + handle_charref(name)
+}
+
+note right of HTMLParser
+  Klasa bazowa z biblioteki standardowej.
+  Definiuje algorytm parsowania (feed/close).
+  Metody handle_* to haki (Template Method).
+end note
+
+class TextCollector {
+    + texts : list[str]
+    + __init__()
+    + handle_data(data)
+    + get_text() : str
+}
+
+class HeadingCollector {
+    + headings : list[str]
+    - _current_heading : str | None
+    + __init__()
+    + handle_starttag(tag, attrs)
+    + handle_data(data)
+    + handle_endtag(tag)
+}
+
+class ImageExtractor {
+    + sources : list[str]
+    + __init__()
+    + handle_starttag(tag, attrs)
+}
+
+HTMLParser <|-- TextCollector
+HTMLParser <|-- HeadingCollector
+HTMLParser <|-- ImageExtractor
+
+@enduml
+

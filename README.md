@@ -51,6 +51,8 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pytest src\_03-modules -c src\_03-modules\pytest.ini -v
 .venv\Scripts\python.exe -m pytest src\_04-classes -c src\_04-classes\pytest.ini -v
 .venv\Scripts\python.exe -m pytest src\_05-exceptions -c src\_05-exceptions\pytest.ini -v
+.venv\Scripts\python.exe -m pytest src\_06-regex -c src\_06-regex\pytest.ini -v
+.venv\Scripts\python.exe -m pytest src\_07-html-parser -c src\_07-html-parser\pytest.ini -v
 
 # Po aktywacji venv (każdy system):
 python -m pytest src/_01-introduction -v
@@ -58,6 +60,8 @@ python -m pytest src/_02-functions -v
 python -m pytest src/_03-modules -c src/_03-modules/pytest.ini -v
 python -m pytest src/_04-classes -c src/_04-classes/pytest.ini -v
 python -m pytest src/_05-exceptions -c src/_05-exceptions/pytest.ini -v
+python -m pytest src/_06-regex -c src/_06-regex/pytest.ini -v
+python -m pytest src/_07-html-parser -c src/_07-html-parser/pytest.ini -v
 ```
 
 ### 4. Wygeneruj diagramy PNG z plików PlantUML
@@ -69,6 +73,8 @@ python -m pytest src/_05-exceptions -c src/_05-exceptions/pytest.ini -v
 .venv\Scripts\python.exe src\_03-modules\generate_diagrams.py
 .venv\Scripts\python.exe src\_04-classes\generate_diagrams.py
 .venv\Scripts\python.exe src\_05-exceptions\generate_diagrams.py
+.venv\Scripts\python.exe src\_06-regex\generate_diagrams.py
+.venv\Scripts\python.exe src\_07-html-parser\generate_diagrams.py
 ```
 
 ## Moduły kursu
@@ -78,6 +84,8 @@ python -m pytest src/_05-exceptions -c src/_05-exceptions/pytest.ini -v
 - [`src/_03-modules/README.md`](src/_03-modules/README.md) - moduły, importy, pakiety, pycache i zarządzanie zależnościami
 - [`src/_04-classes/README.md`](src/_04-classes/README.md) - klasy i programowanie obiektowe (dziedziczenie, polimorfizm, wzorce projektowe)
 - [`src/_05-exceptions/README.md`](src/_05-exceptions/README.md) - wyjątki, obsługa plików i serializacja (`pickle`)
+- [`src/_06-regex/README.md`](src/_06-regex/README.md) - wyrażenia regularne (składnia, moduł `re`, grupy, flagi, wzorce zaawansowane)
+- [`src/_07-html-parser/README.md`](src/_07-html-parser/README.md) - HTMLParser (parser strumieniowy, zdarzenia, ekstrakcja linków, zliczanie tagów, alternatywy)
 
 ## Jak wybrać moduł na start?
 
@@ -88,6 +96,8 @@ Dla studentów I roku polecana kolejność pracy:
 3. **`_03-modules`** - praca z modułami i pakietami, import system i dobre praktyki ekosystemu.
 4. **`_04-classes`** - programowanie obiektowe: klasy, dziedziczenie, polimorfizm, interfejsy.
 5. **`_05-exceptions`** - obsługa błędów, pliki tekstowe i binarne, serializacja.
+6. **`_06-regex`** - wyrażenia regularne: składnia, moduł `re`, grupy, flagi, zaawansowane wzorce, walidacja.
+7. **`_07-html-parser`** - HTMLParser: parser strumieniowy, zdarzenia, ekstrakcja linków, zliczanie tagów, ograniczenia i alternatywy.
 
 Sugerowany rytm nauki:
 - najpierw przeczytaj `README.md` wybranego tematu,
@@ -158,6 +168,25 @@ python-programming/
         ├── 04-built-in-exceptions/    # wyjątki wbudowane
         ├── 05-file-handling-caesar-cipher/ # pliki + szyfr Cezara
         └── 06-pickle-and-serialization/    # pickle i serializacja
+    └── _06-regex/
+        ├── pytest.ini            # konfiguracja pytest dla modułu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-formal-languages/       # języki formalne i automaty
+        ├── 02-basic-syntax/           # podstawowa składnia regex
+        ├── 03-re-module/              # moduł re – API
+        ├── 04-groups/                 # grupy i przechwytywanie
+        ├── 05-flags/                  # flagi i tryby
+        ├── 06-advanced-patterns/      # zaawansowane wzorce
+        └── 07-practical-use/          # praktyczne zastosowania
+    └── _07-html-parser/
+        ├── pytest.ini            # konfiguracja pytest dla modułu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-streaming-parser-events/  # analizator strumieniowy i zdarzenia
+        ├── 02-subclassing/              # rozszerzanie parsera (dziedziczenie)
+        ├── 03-event-handling/           # obsługa zdarzeń i callbacki
+        ├── 04-link-extraction/          # ekstrakcja linków (szczegółowo)
+        ├── 05-tag-counting/             # zliczanie tagów i statystyki
+        └── 06-limitations-and-alternatives/ # ograniczenia i alternatywy
 ```
 
 ## Zależności

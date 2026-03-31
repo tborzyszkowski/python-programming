@@ -1,0 +1,64 @@
+@startuml
+title Przepływ zdarzeń w HTMLParser (model strumieniowy)
+
+skinparam sequence {
+    ArrowColor DarkBlue
+    ActorBorderColor DarkBlue
+    LifeLineBorderColor DarkBlue
+    ParticipantBackgroundColor LightYellow
+    ParticipantBorderColor DarkOrange
+}
+
+participant "Kod użytkownika" as User
+participant "HTMLParser\n(tokenizer)" as Parser
+participant "Callbacks\n(handle_*)" as CB
+
+User -> Parser : feed("<div class='box'>")
+activate Parser
+Parser -> CB : handle_starttag("div", [("class","box")])
+activate CB
+CB --> Parser
+deactivate CB
+deactivate Parser
+
+User -> Parser : feed("Hello <b>world</b>")
+activate Parser
+Parser -> CB : handle_data("Hello ")
+activate CB
+CB --> Parser
+deactivate CB
+Parser -> CB : handle_starttag("b", [])
+activate CB
+CB --> Parser
+deactivate CB
+Parser -> CB : handle_data("world")
+activate CB
+CB --> Parser
+deactivate CB
+Parser -> CB : handle_endtag("b")
+activate CB
+CB --> Parser
+deactivate CB
+deactivate Parser
+
+User -> Parser : feed("</div>")
+activate Parser
+Parser -> CB : handle_endtag("div")
+activate CB
+CB --> Parser
+deactivate CB
+deactivate Parser
+
+User -> Parser : close()
+activate Parser
+Parser --> User : przetwarzanie zakończone
+deactivate Parser
+
+note right of Parser
+  Parser NIE buduje drzewa DOM.
+  Każdy token natychmiast
+  wywołuje odpowiedni callback.
+end note
+
+@enduml
+

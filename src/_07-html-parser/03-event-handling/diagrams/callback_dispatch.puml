@@ -1,0 +1,56 @@
+@startuml
+title Dispatch callbacków w HTMLParser
+
+skinparam activity {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+skinparam ArrowColor DarkBlue
+
+start
+
+:feed(data) – tokenizer\nanalizuje strumień HTML;
+
+if (Typ tokenu?) then
+
+    partition "Tag otwierający\n<tag attrs>" {
+        if (Samozamykający\n<tag/>?) then (tak)
+            :handle_startendtag(tag, attrs);
+        else (nie)
+            :handle_starttag(tag, attrs);
+        endif
+    }
+
+else if (Tag zamykający\n</tag>) then
+    :handle_endtag(tag);
+
+else if (Dane tekstowe) then
+    if (convert_charrefs?) then (True)
+        :handle_data(data)\n(encje zamienione na znaki);
+    else (False)
+        :handle_data(data);
+    endif
+
+else if (Komentarz\n<!-- ... -->) then
+    :handle_comment(data);
+
+else if (Deklaracja\n<!DOCTYPE ...>) then
+    :handle_decl(decl);
+
+else if (Processing Instruction\n<?...?>) then
+    :handle_pi(data);
+
+else if (Referencja encji\n&name;) then
+    note right: Tylko gdy convert_charrefs=False
+    :handle_entityref(name);
+
+else if (Referencja znakowa\n&#NNN;) then
+    note right: Tylko gdy convert_charrefs=False
+    :handle_charref(name);
+
+endif
+
+stop
+
+@enduml
+

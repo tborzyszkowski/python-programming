@@ -2,35 +2,47 @@
 
 ## Cel
 
-Zrozumienie, czym są przestrzenie nazw (`namespaces`), jak działa reguła LEGB i dlaczego ten mechanizm porządkuje kod w dużych programach.
+Zrozumienie, czym są przestrzenie nazw (`namespaces`), jak działa reguła LEGB oraz jak używać `global` i `nonlocal`.
 
-## Dlaczego namespace istnieje?
+## Kontekst historyczny
 
-Bez namespaces identyfikator `count` z jednego fragmentu kodu mógłby przypadkowo nadpisać `count` z innego miejsca.
+Problem kolizji nazw jest stary jak programowanie. W językach proceduralnych (C, Pascal) jedynym
+mechanizmem były zasięgi bloków. **Moduły Lispa** i **packages Ada** jako pierwsze dały nazwy
+przestrzeniom. Python od wersji 1.x oparł cały model na słowniku: każde środowisko wykonania
+(moduł, funkcja, klasa) to oddzielny słownik nazw.
 
-Przestrzeń nazw to **mapowanie**:
-- klucz: nazwa symbolu (np. `count`, `print`, `VALUE`),
-- wartość: obiekt Pythona (np. `int`, funkcja, klasa, moduł).
+## Teoria
 
-W praktyce w Pythonie osobnymi przestrzeniami nazw są m.in.:
-- moduł,
-- funkcja,
-- klasa,
-- wbudowany namespace `builtins`.
+### Przestrzeń nazw jako słownik
 
-## LEGB w Pythonie
+```python
+x = 42
+print(globals()["x"])   # 42 — nazwa "x" to klucz w słowniku modułu
+```
 
-Kolejność szukania nazwy:
-1. **L**ocal - bieżąca funkcja,
-2. **E**nclosing - funkcja zewnętrzna (closure),
-3. **G**lobal - moduł,
-4. **B**uiltins - `len`, `sum`, `print` itd.
+Przestrzeń nazw to **mapowanie klucz→wartość**:
+- klucz: napis (nazwa zmiennej, funkcji, klasy),
+- wartość: dowolny obiekt Pythona.
+
+Nazwy **nie przechowują** wartości — są etykietami wskazującymi obiekty.
+
+### Reguła LEGB — cztery poziomy szukania
+
+| Poziom | Skrót | Opis | Przykład |
+|---|---|---|---|
+| Lokalny | **L** | Ciało bieżącej funkcji | zmienna w `def f():` |
+| Zewnętrzny | **E** | Funkcja otaczająca (closure) | zmienna w `def outer():` wewnątrz której jest `f` |
+| Globalny | **G** | Moduł | `VALUE = "global"` na poziomie pliku |
+| Wbudowany | **B** | `builtins` | `len`, `sum`, `print`, `type` |
+
+Python szuka nazwy **od L do B**, zatrzymując się przy pierwszym znalezieniu. Ten mechanizm
+nazywamy **cieniowaniem** (ang. *shadowing*): lokalna definicja zasłania zewnętrzną.
 
 Diagram: `diagrams/legb_lookup.png`
 
 ![LEGB](diagrams/legb_lookup.png)
 
-## Krok po kroku na kodzie
+### Przykład LEGB w kodzie
 
 Plik: `examples/namespace_demo.py`
 
@@ -41,66 +53,108 @@ def legb_demo() -> tuple[str, str, str]:
     value = "enclosing-value"
 
     def inner() -> tuple[str, str, str]:
-        value = "local-value"
+        value = "local-value"          # przesłania enclosing i global
         return value, VALUE, str(len([1, 2, 3]))
 
     return inner()
 ```
 
-Interpretacja:
-- `value` w `inner()` to poziom **L**,
-- `VALUE` jest znalezione na poziomie **G** (moduł),
-- `len` pochodzi z **B** (builtins),
-- poziom **E** istnieje (`value = "enclosing-value"`), ale tutaj jest przesłonięty przez lokalne `value`.
+- `value` w `inner` → poziom **L**
+- `VALUE` → poziom **G** (moduł)
+- `len` → poziom **B** (builtins)
+- `value = "enclosing-value"` → poziom **E**, przesłonięty przez **L**
 
-To zjawisko nazywamy **cieniowaniem** (shadowing): ta sama nazwa może występować na wielu poziomach, ale widoczna jest najbliższa.
+### Słowa kluczowe `global` i `nonlocal`
 
-## `locals()` i `globals()`
+Domyślnie przypisanie wewnątrz funkcji **tworzy zmienną lokalną**. Jeśli chcemy zmodyfikować
+zmienną z wyższego poziomu, trzeba to zadeklarować jawnie:
 
-W tym samym pliku funkcja `snapshot_symbol_tables()` pokazuje, że:
-- `locals()` zwraca symbole aktualnego scope,
-- `globals()` zwraca symbole modułu.
+```python
+counter = 0
 
-To bardzo przydatne podczas diagnostyki błędów typu `NameError`.
+def increment_global() -> None:
+    global counter          # bez tego "counter = ..." tworzy lokalną zmienną
+    counter += 1
 
-## Mini-lab: LEGB w praktyce
+increment_global()
+print(counter)   # 1
+```
 
-### Cele
-- utrwalić kolejność LEGB,
-- rozpoznać cieniowanie nazw,
-- zrozumieć różnicę między `globals()` a `locals()`.
+```python
+def make_counter():
+    value = 0
 
-### Kroki
-1. Uruchom `examples/namespace_demo.py`.
-2. Zmień nazwę lokalnej zmiennej `value` w `inner()` na `inner_value`.
-3. Ponownie uruchom skrypt i porównaj wynik `legb_demo()`.
-4. Dopisz `print("value" in globals())` i `print("value" in locals())` wewnątrz `legb_demo()`.
+    def increment() -> int:
+        nonlocal value      # bez tego błąd UnboundLocalError
+        value += 1
+        return value
+
+    return increment
+
+cnt = make_counter()
+print(cnt(), cnt())   # 1  2
+```
+
+**Zasada projektowa:** `global` i `nonlocal` są uzasadnione rzadko. Częste ich użycie
+sygnalizuje, że warto zamienić zmienną na argument lub encapsulate w klasie.
+
+### `locals()` i `globals()`
+
+```python
+def inspect():
+    local_var = "tu"
+    print("local_var" in locals())   # True
+    print("local_var" in globals())  # False
+    print("inspect" in globals())    # True — funkcja widoczna globalnie
+```
+
+`globals()` zwraca słownik modułu. `locals()` — bieżącego scope (kopia, nie referencja!).
+
+## Krok po kroku na kodzie
+
+Plik: `examples/namespace_demo.py` — uruchom i przeanalizuj wynik.
+
+```bash
+python src/_03-modules/01-namespaces/examples/namespace_demo.py
+```
+
+## Mini-lab (krok po kroku)
+
+1. Uruchom `examples/namespace_demo.py` i sprawdź wynik `LEGB:`.
+2. Usuń lokalną zmienną `value` z `inner()` — jaką wartość teraz widać?
+3. Dodaj `global VALUE` w `legb_demo()` i przypisz `VALUE = "changed"` — co się dzieje?
+4. Napisz closure z `nonlocal` liczące wywołania funkcji.
+5. Spróbuj `len = 10` na poziomie modułu — co się stanie przy wywołaniu `len([])`?
 
 ### Oczekiwany efekt
+
 - Student potrafi wskazać, z którego poziomu LEGB pochodzi każda nazwa.
+- Student rozumie, kiedy i jak używać `global` i `nonlocal`.
 
-### Rozszerzenie
-- Dodaj własną funkcję z `nonlocal` i sprawdź, jak zmienia się zachowanie zmiennej poziomu E.
+## Zadania
 
-## Zadania i rozszerzenia
-
-- `exercises/tasks.py` - zadania do samodzielnego rozwiązania,
-- `exercises/solutions_namespaces.py` - przykładowe rozwiązania,
-- `exercises/test_solutions.py` - testy.
+- `exercises/tasks.py` — zadania do samodzielnego rozwiązania,
+- `exercises/solutions_namespaces.py` — przykładowe rozwiązania,
+- `exercises/test_solutions.py` — testy.
 
 ## Typowe pułapki
 
 - oczekiwanie, że `globals()` zawiera symbole lokalne funkcji,
-- przypadkowe cieniowanie nazw z `builtins` (np. `list = [...]`),
-- mylenie „nazwa” z „obiektem” (nazwa wskazuje obiekt, nie przechowuje go fizycznie).
+- przypadkowe cieniowanie builtinów (np. `list = [...]`, `id = 5`),
+- zapis do `locals()` — **nie modyfikuje** bieżącego scope (to kopia!),
+- `global` bez potrzeby — utrudnia testowanie i rozumienie o stanie.
 
-## Pytania kontrolne
+## Pytania egzaminacyjne
 
-1. Co się stanie, gdy usuniesz lokalne `value` z `inner()`?
-2. Dlaczego `len` nie pojawia się w `globals()`, a mimo to działa?
-3. Czym różni się scope funkcji od przestrzeni nazw modułu?
+1. Wyjaśnij regułę LEGB i podaj przykład dla każdego poziomu.
+2. Co to jest cieniowanie nazw? Kiedy jest zamierzone, a kiedy jest błędem?
+3. Jaka jest różnica między `global` a `nonlocal`?
+4. Dlaczego `len` działa bez importu?
+5. Co zwróci `"x" in locals()` wywołane poza funkcją?
+6. Dlaczego modyfikacja słownika z `locals()` nie zmienia zmiennych lokalnych?
 
 ## Literatura
 
 - https://docs.python.org/3/tutorial/classes.html#python-scopes-and-namespaces
 - https://realpython.com/python-scope-legb-rule/
+- https://docs.python.org/3/reference/executionmodel.html#naming-and-binding

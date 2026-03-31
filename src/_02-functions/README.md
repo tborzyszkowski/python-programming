@@ -36,6 +36,8 @@ python src/_02-functions/02-arguments/examples/variable_args_demo.py
 python src/_02-functions/03-lambda-calculus/examples/lambda_demo.py
 python src/_02-functions/04-lambda-usage/examples/functional_tools.py
 python src/_02-functions/05-srp/examples/monolith_vs_srp.py
+python src/_02-functions/06-separation-of-concerns/examples/monolith_vs_layers.py
+python src/_02-functions/06-separation-of-concerns/examples/layered_grade_app.py
 
 # Uruchomienie testów jednostkowych
 python -m pytest src/_02-functions/01-definition/examples/test_functions.py
@@ -46,6 +48,7 @@ python -m pytest src/_02-functions/02-arguments/exercises/test_solutions.py
 python -m pytest src/_02-functions/03-lambda-calculus/exercises/test_solutions.py
 python -m pytest src/_02-functions/04-lambda-usage/exercises/test_solutions.py
 python -m pytest src/_02-functions/05-srp/exercises/test_solutions.py
+python -m pytest src/_02-functions/06-separation-of-concerns/exercises/test_solutions.py
 ```
 
 ## Zadania do samodzielnego rozwiązania
@@ -67,6 +70,7 @@ Każdy temat zawiera podkatalog `exercises/` z trzema plikami:
 | **03-lambda-calculus** | aplikacja funkcji, domknięcia, kompozycja, currying, mapowanie i filtrowanie |
 | **04-lambda-usage** | sortowanie słowników, filtrowanie transakcji, mapowanie kwot, redukcja sum, ranking |
 | **05-srp** | rozbijanie funkcji monolitycznych, walidacja, klasyfikacja, budowanie raportu, orkiestracja kroków |
+| **06-separation-of-concerns** | parsowanie wejścia, walidacja komponentów, ważony wynik końcowy, PASS/FAIL, renderowanie raportu, orkiestracja warstw, batch pipeline |
 
 ## Diagramy PlantUML
 
@@ -79,6 +83,9 @@ W podkatalogach `diagrams/` znajdują się pliki źródłowe `.puml`.
 | **Funkcja Lambda** | Składnia i prostota wyrażenia lambda | `03-lambda-calculus/diagrams/lambda_diagram.puml` |
 | **Map / Filter / Reduce** | Przepływ danych w funkcjach wyższego rzędu | `04-lambda-usage/diagrams/higher_order.puml` |
 | **SRP dla funkcji** | Rozbicie funkcji na pojedyncze odpowiedzialności | `05-srp/diagrams/srp_function_decomposition.puml` |
+| **Architektura warstwowa** | Podział na warstwy model/prezentacja/interakcja | `06-separation-of-concerns/diagrams/layered_architecture.puml` |
+| **Przepływ żądania** | Sekwencja wywołań między warstwami | `06-separation-of-concerns/diagrams/request_flow.puml` |
+| **Mapa testowalności** | Które warstwy można testować niezależnie | `06-separation-of-concerns/diagrams/testability_map.puml` |
 
 ## Przykładowy kod
 
@@ -95,6 +102,8 @@ W module znajdują się gotowe do uruchomienia przykłady ilustrujące omawiane 
 - **`data_pipeline.py`** – większy scenariusz przetwarzania transakcji (filter/map/reduce/sort).
 - **`monolith_vs_srp.py`** – porównanie funkcji monolitycznej i rozwiązania zgodnego z SRP.
 - **`grade_report_pipeline.py`** – pipeline raportowania wyników z podziałem na małe funkcje.
+- **`monolith_vs_layers.py`** – kontrast między podejściem monolitycznym a warstwowym (SoC).
+- **`layered_grade_app.py`** – kompletna aplikacja ocen z wyraźnym podziałem na warstwy model/prezentacja/interakcja.
 
 ---
 

@@ -4,18 +4,32 @@
 
 Zrozumieć różnicę między klasą (opis typu) a obiektem (konkretna instancja) oraz historyczne źródła OOP.
 
-## Teoria i intuicja
+## Kontekst historyczny
 
-W klasycznych językach obiektowych (Simula, Smalltalk) klasa była przepisem, a obiekt egzemplarzem.
+Programowanie obiektowe narodziło się w **Simula 67** (Dahl & Nygaard, Norwegia), gdzie
+pojęcie *klasy* służyło do modelowania procesów symulacyjnych. **Smalltalk** (Kay, lata 70.)
+uczynił obiekt absolutną jednostką programu. **C++** i **Java** spopularyzowały OOP
+w przemyśle w latach 80.–90. Python od wersji 2.2 ma ujednolicony model obiektów
+(*new-style classes*): wszystko jest obiektem, nawet liczby i funkcje.
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+## Teoria
+
+### Klasa jako przepis, obiekt jako egzemplarz
+
+| Pojęcie | Analogia | W Pythonie |
+|---|---|---|
+| **Klasa** | Projekt domu, forma ciastek | `class Student:` |
+| **Obiekt** | Konkretny dom, konkretne ciastko | `jan = Student("Jan", 1)` |
+| **Instancja** | Synonim obiektu | `jan` jest instancją `Student` |
+| **Atrybut** | Cecha egzemplarza | `jan.name`, `jan.year` |
+| **Metoda** | Operacja na egzemplarzu | `jan.enroll()` |
+
+Klasa definiuje *typ* — zestaw możliwych atrybutów i metod.
+Obiekt jest *wartością* tego typu — z własnym, konkretnym stanem.
 
 Diagram: `diagrams/topic_01.png`
 
-![Diagram tematu](diagrams/topic_01.png)
+![Klasa a obiekt](diagrams/topic_01.png)
 
 ## Krok po kroku na kodzie
 
@@ -36,68 +50,55 @@ if __name__ == "__main__":
     print(describe_student(Student("Jan", 1)))
 ```
 
-Uruchomienie:
+Interpretacja:
+- `Student` to klasa — definicja struktury,
+- `Student("Jan", 1)` tworzy obiekt z konkretnym stanem (`name="Jan"`, `year=1`),
+- `describe_student` działa na dowolnym obiekcie `Student` — to programowanie do *typu*.
 
-```bash
-python src/_04-classes/01-class-vs-object/examples/class_object_story.py
+### Dlaczego nie wystarczą funkcje i słowniki?
+
+```python
+# Wersja bez klas — szybko staje się krucha:
+student = {"name": "Jan", "year": 1}
+# Nic nie chroni przed błędnym kluczem ani brakującym polem.
 ```
 
-## Zadanie do samodzielnego rozwiązania
+Klasa daje:
+- **enkapsulację** (pola + metody razem),
+- **walidację** w konstruktorze,
+- **czytelność** (typ mówi o intencji projektanta).
 
-Napisz funkcję `count_first_year(students)`, która policzy studentów z pierwszego roku.
+## Mini-lab (krok po kroku)
+
+1. Uruchom `examples/class_object_story.py`.
+2. Utwórz klasę `Course` z polami `name: str` i `ects: int`.
+3. Stwórz 3 instancje i wstaw je na listę.
+4. Napisz funkcję filtrującą kursy z `ects >= 5`.
+5. Dodaj metodę `__str__` do `Course` i sprawdź `print(course)`.
+
+### Oczekiwany efekt
+
+- Student rozumie różnicę między definicją klasy a tworzeniem obiektu.
+- Student potrafi napisać prostą klasę domenową i funkcję operującą na jej instancjach.
+
+## Zadanie do samodzielnego rozwiązania
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_01.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
+Zadanie: napisz `count_first_year(students: list[Student]) -> int`.
 
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
+## Pytania egzaminacyjne
+
+1. Wyjaśnij różnicę semantyczną: klasa, obiekt, instancja.
+2. Jaką przewagę daje klasa nad słownikiem w modelowaniu domeny?
+3. Podaj przykład, gdzie OOP jest lepsze niż funkcje bez klas.
+4. Czym różni się nazwa klasy od obiektu przez nią tworzonego?
+5. Jak przetestować poprawność tworzenia obiektów?
 
 ## Literatura
 
 - https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Początki programowania obiektowego wiążą się z językiem **Simula 67**, gdzie pojęcie obiektu miało modelować byty świata rzeczywistego (np. klientów banku, procesy, pojazdy). W **Smalltalku** obiekt stał się podstawową jednostką organizacji programu. Python przejął wiele intuicji z tej tradycji, ale zachował pragmatyzm: klasy i obiekty współistnieją tu z funkcjami, modułami i stylem proceduralnym.
-
-## Dodatkowy przykład kodu
-
-```python
-students = [Student("Ala", 1), Student("Olek", 2), Student("Iga", 1)]
-first_year = [s for s in students if s.year == 1]
-print([describe_student(s) for s in first_year])
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Utwórz klasę `Course` z polami `name` i `ects`.
-2. Utwórz 3 obiekty tej klasy i zapisz je na liście.
-3. Napisz funkcję filtrującą kursy o `ects >= 5`.
-4. Dodaj czytelny opis kursu przez metodę `__str__`.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
-
-## Pytania egzaminacyjne
-
-1. Wyjaśnij różnicę semantyczną między pojęciami: klasa, obiekt, instancja.
-2. Dlaczego modelowanie obiektowe bywa korzystne przy dużych projektach?
-3. Podaj przykład problemu, który lepiej opisać obiektami niż samymi funkcjami.
-4. Czym różni się nazwa klasy od obiektu utworzonego przez tę klasę?
-5. Jak przetestować poprawność tworzenia obiektów dla danej klasy?
-
-## Dodatkowa literatura
-
-- B. Meyer, *Object-Oriented Software Construction*.
 - G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- B. Meyer, *Object-Oriented Software Construction*.

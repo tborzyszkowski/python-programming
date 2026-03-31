@@ -1,0 +1,20 @@
+@startuml
+skinparam monochrome true
+title Wybrane wyjatki wbudowane
+
+class Exception
+class ValueError
+class TypeError
+class KeyError
+class IndexError
+class FileNotFoundError
+class ZeroDivisionError
+
+Exception <|-- ValueError
+Exception <|-- TypeError
+Exception <|-- KeyError
+Exception <|-- IndexError
+Exception <|-- FileNotFoundError
+Exception <|-- ZeroDivisionError
+@enduml
+

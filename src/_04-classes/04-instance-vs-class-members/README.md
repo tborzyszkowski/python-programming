@@ -2,20 +2,59 @@
 
 ## Cel
 
-Odróżniać atrybuty instancji, atrybuty klasy, metody klasowe i statyczne.
+Odróżniać atrybuty i metody instancji od atrybutów klasowych, metod klasowych (`@classmethod`) i statycznych (`@staticmethod`).
 
-## Teoria i intuicja
+## Teoria
 
-Atrybut klasowy jest współdzielony. Atrybut instancji należy do konkretnego obiektu.
+### Trzy poziomy przynależności
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+| Rodzaj | Dekorator | Pierwszy parametr | Dostęp |
+|---|---|---|---|
+| Metoda instancji | (brak) | `self` — obiekt | `obj.method()` |
+| Metoda klasowa | `@classmethod` | `cls` — klasa | `Cls.method()` lub `obj.method()` |
+| Metoda statyczna | `@staticmethod` | (brak) | `Cls.method()` lub `obj.method()` |
+
+### Atrybuty klasowe a instancyjne
+
+```python
+class Session:
+    active_count = 0      # ← atrybut KLASOWY — wspólny dla wszystkich
+
+    def __init__(self, user: str) -> None:
+        self.user = user  # ← atrybut INSTANCJI — każdy obiekt ma swój
+        Session.active_count += 1
+```
+
+**Pułapka:** mutowalny atrybut klasowy (lista, słownik) jest współdzielony — modyfikacja
+przez jeden obiekt wpływa na wszystkie inne!
+
+```python
+class Buggy:
+    items = []   # BŁĄD: ta lista jest wspólna dla całej klasy
+
+class Fixed:
+    def __init__(self) -> None:
+        self.items = []  # POPRAWNIE: osobna lista dla każdego obiektu
+```
+
+### `@classmethod` vs `@staticmethod`
+
+```python
+class Session:
+    active_count = 0
+
+    @classmethod
+    def active_sessions(cls) -> int:
+        return cls.active_count     # dostęp do klasy przez cls
+
+    @staticmethod
+    def is_valid_username(name: str) -> bool:
+        return len(name) >= 3       # brak dostępu do klasy ani instancji
+```
 
 Diagram: `diagrams/topic_04.png`
 
-![Diagram tematu](diagrams/topic_04.png)
+![Komponenty instancyjne i klasowe](diagrams/topic_04.png)
 
 ## Krok po kroku na kodzie
 
@@ -38,69 +77,46 @@ class Session:
         return len(name) >= 3
 ```
 
-Uruchomienie:
+Przykłady wywołań:
 
-```bash
-python src/_04-classes/04-instance-vs-class-members/examples/members_demo.py
+```python
+s1 = Session("adam")
+s2 = Session("ewa")
+print(Session.active_sessions())          # 2
+print(Session.is_valid_username("xy"))    # False
 ```
 
-## Zadanie do samodzielnego rozwiązania
+## Mini-lab (krok po kroku)
 
-Dodaj metodę klasową `reset_counter`, która zeruje licznik aktywnych sesji.
+1. Uruchom `examples/members_demo.py`.
+2. Utwórz 3 sesje i sprawdź licznik klasowy.
+3. Dodaj metodę klasową `reset_counter()` zerującą licznik.
+4. Pokaż pułapkę z mutowalnym atrybutem klasowym (lista).
+5. Napisz test sprawdzający, że `reset_counter` faktycznie zeruje stan.
+
+### Oczekiwany efekt
+
+- Student odróżnia metody instancji, klasowe i statyczne.
+- Student zna pułapkę mutowalnych atrybutów klasowych.
+
+## Zadanie do samodzielnego rozwiązania
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_04.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Rozróżnienie „co należy do obiektu, a co do klasy” to jedna z kluczowych decyzji projektowych w OOP. W praktyce przemysłowej pomylenie tych poziomów jest częstym źródłem trudnych błędów, zwłaszcza przy licznikach, cache i konfiguracji globalnej.
-
-## Dodatkowy przykład kodu
-
-```python
-s1 = Session("adam")
-s2 = Session("ewa")
-print(Session.active_sessions())
-print(Session.is_valid_username("xy"))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj limit aktywnych sesji na poziomie klasy.
-2. Zablokuj tworzenie nowej sesji po przekroczeniu limitu.
-3. Dodaj metodę klasową zwracającą konfigurację limitu.
-4. Sprawdź testami, że stan klasowy jest wspólny.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: dopisz metodę klasową `reset_counter(cls)` zerującą `active_count`.
 
 ## Pytania egzaminacyjne
 
 1. Kiedy atrybut powinien być instancyjny, a kiedy klasowy?
 2. Czym różni się `@classmethod` od `@staticmethod`?
-3. Jakie ryzyko niesie mutowalny atrybut klasowy?
-4. Jak zaprojektować licznik obiektów tworzonych przez klasę?
+3. Jakie ryzyko niesie mutowalny atrybut klasowy (np. lista)?
+4. Jak zaprojektować licznik tworzonych obiektów?
 5. Dlaczego stan współdzielony wymaga ostrożności projektowej?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/tutorial/classes.html
+- https://docs.python.org/3/library/functions.html#classmethod
+- https://docs.python.org/3/library/functions.html#staticmethod

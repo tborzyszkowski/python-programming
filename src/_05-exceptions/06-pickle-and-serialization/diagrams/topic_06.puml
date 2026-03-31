@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+title Serializacja i deserializacja pickle
+
+start
+:Utworz obiekt z podobiektami;
+:pickle.dump(obj, plik);
+:Odczytaj bytes z pliku;
+:pickle.load(plik) -> nowy obiekt;
+if (To samo id?) then (tak)
+  :Blad rozumowania;
+else (nie)
+  :Rownosc danych, inna tozsamosc;
+endif
+stop
+@enduml
+

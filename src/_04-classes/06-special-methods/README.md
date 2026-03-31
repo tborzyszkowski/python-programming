@@ -2,109 +2,110 @@
 
 ## Cel
 
-Praktycznie używać `__init__`, `__new__`, `__len__`, `__str__`, getter/setter przez `property`.
+Opanować metody specjalne i zrozumieć, jak integrują klasy z protokołami języka.
 
-## Teoria i intuicja
+## Teoria
 
-Metody specjalne integrują klasy z protokołami języka (`len`, `str`, iteracja, porównania, kontekst).
+### Czym są metody specjalne?
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+Metody otoczone podwójnymi podkreślnikami (`__init__`, `__str__`, `__add__`) są
+wywoływane przez Pythona automatycznie — nigdy nie wołasz ich bezpośrednio.
+
+```
+len(v)    →  v.__len__()
+str(v)    →  v.__str__()
+v1 + v2   →  v1.__add__(v2)
+v1 == v2  →  v1.__eq__(v2)
+repr(v)   →  v.__repr__()
+```
+
+### Kluczowe metody i ich rola
+
+| Metoda | Kiedy wywoływana | Zwraca |
+|---|---|---|
+| `__new__(cls)` | Tworzenie obiektu w pamięci | nowy pusty obiekt |
+| `__init__(self)` | Inicjalizacja po `__new__` | `None` |
+| `__str__(self)` | `str(obj)`, `print(obj)` | czytelny napis |
+| `__repr__(self)` | `repr(obj)`, REPL | jednoznaczny napis (eval-able) |
+| `__len__(self)` | `len(obj)` | `int >= 0` |
+| `__eq__(self, other)` | `==` | `bool` |
+| `__add__(self, other)` | `+` | nowy obiekt |
+| `__lt__`, `__le__`… | `<`, `<=`… | `bool` |
+
+### `__str__` vs `__repr__`
+
+```python
+v = Vector2D(3.0, 4.0)
+print(str(v))   # "Vector2D(x=3.0, y=4.0)"   — dla użytkownika
+print(repr(v))  # "Vector2D(x=3.0, y=4.0)"   — dla programisty (eval-able)
+```
+
+Zasada: `repr` powinien pozwalać odtworzyć obiekt przez `eval(repr(obj))`.
+
+### `@property` — kontrolowany dostęp
+
+```python
+@property
+def magnitude(self) -> float:
+    return math.sqrt(self.x**2 + self.y**2)
+```
+
+`@property` sprawia, że obliczana wartość wygląda jak atrybut:
+`v.magnitude` zamiast `v.magnitude()`.
 
 Diagram: `diagrams/topic_06.png`
 
-![Diagram tematu](diagrams/topic_06.png)
+![Metody specjalne](diagrams/topic_06.png)
 
 ## Krok po kroku na kodzie
 
-Plik: `examples/dunder_demo.py`
+Plik: `examples/dunder_demo.py` — rozszerzona klasa `Vector2D`:
+- `__new__` / `__init__` / `__str__` / `__repr__`
+- `__len__` / `__eq__` / `__add__` / `__mul__`
+- `@property magnitude`
 
 ```python
-class Vector2D:
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls)
-
-    def __init__(self, x: float, y: float) -> None:
-        self.x = x
-        self.y = y
-
-    def __len__(self) -> int:
-        return 2
-
-    def __str__(self) -> str:
-        return f"Vector2D(x={self.x}, y={self.y})"
-
-    @property
-    def magnitude_hint(self) -> float:
-        return abs(self.x) + abs(self.y)
+v1 = Vector2D(3, 4)
+v2 = Vector2D(1, -1)
+print(str(v1))               # __str__
+print(repr(v1))              # __repr__
+print(len(v1))               # __len__
+print(v1 == Vector2D(3, 4))  # __eq__
+print(v1 + v2)               # __add__
+print(f"{v1.magnitude:.2f}") # @property
 ```
 
-Uruchomienie:
+## Mini-lab (krok po kroku)
 
-```bash
-python src/_04-classes/06-special-methods/examples/dunder_demo.py
-```
+1. Uruchom `examples/dunder_demo.py`.
+2. Sprawdź `v1 == v2` i `v1 == Vector2D(3, 4)` — dlaczego różny wynik?
+3. Dodaj `__mul__` po prawej stronie (`__rmul__`) tak, by `2 * v` działało.
+4. Dopisz `__neg__` zwracający wektor o przeciwnych współrzędnych.
+5. Napisz test `assert eval(repr(v1)) == v1` i sprawdź czy przechodzi.
+
+### Oczekiwany efekt
+
+- Student rozumie, kiedy Python wywołuje poszczególne metody specjalne.
+- Student potrafi implementować operatory i protokoły dla własnych klas.
 
 ## Zadanie do samodzielnego rozwiązania
-
-Dodaj metodę `__repr__` zwracającą jednoznaczny zapis obiektu.
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_06.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Model danych Pythona definiuje protokoły, dzięki którym obiekty integrują się z mechanizmami języka (`len`, iteracja, porównania, kontekst). Metody specjalne rozwijały się stopniowo wraz z dojrzewaniem języka i dziś stanowią fundament idiomatycznego Pythona.
-
-## Dodatkowy przykład kodu
-
-```python
-v = Vector2D(3, -4)
-print(len(v))
-print(str(v))
-print(v.magnitude_hint)
-print(repr(v))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj `__eq__` i porównywanie dwóch wektorów.
-2. Dodaj `__add__` dla sumy wektorów.
-3. Zaimplementuj walidację typu argumentów w `__init__`.
-4. Sprawdź, jak zachowuje się `len` po zmianie klasy.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: dopisz metodę `__repr__` zwracającą napis `Vector2D(x=..., y=...)`.
 
 ## Pytania egzaminacyjne
 
-1. Jaka jest różnica między `__str__` i `__repr__`?
-2. W jakich sytuacjach trzeba nadpisać `__new__`?
-3. Dlaczego metody specjalne zwiększają ergonomię API?
-4. Jakie ryzyko niesie niepoprawna implementacja `__eq__`?
-5. Jak `property` pomaga ukryć szczegóły implementacji?
+1. Jaka jest różnica między `__str__` a `__repr__`?
+2. Kiedy należy nadpisać `__new__`?
+3. Dlaczego `__eq__` wymaga też implementacji `__hash__`?
+4. Co robi `return NotImplemented` w `__eq__`?
+5. Jak `@property` pomaga ukryć szczegóły implementacji?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/library/functions.html#property
+- L. Ramalho, *Fluent Python*, rozdz. „A Pythonic Object".

@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+title Wyjatek a blad
+
+start
+:Uruchom program;
+if (Kod ma blad skladni?) then (tak)
+  :SyntaxError;
+  stop
+else (nie)
+  :Wykonywanie instrukcji;
+  if (Wynik niepoprawny?) then (tak)
+    :Blad logiczny;
+    :Program dziala, ale zle;
+  else (nie)
+    if (Warunek awaryjny w runtime?) then (tak)
+      :Wyjatek (np. FileNotFoundError);
+      :Przeplyw przerywa sie;
+    else (nie)
+      :Program konczy sie poprawnie;
+    endif
+  endif
+endif
+stop
+@enduml
+

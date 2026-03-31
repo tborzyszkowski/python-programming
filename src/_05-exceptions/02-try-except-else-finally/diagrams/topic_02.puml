@@ -1,0 +1,18 @@
+@startuml
+skinparam monochrome true
+title Przeplyw try-except-else-finally
+
+start
+:Wejscie do try;
+if (Wyjatek?) then (tak)
+  :Przejdz do except;
+  :Obsluz blad;
+else (nie)
+  :Przejdz do else;
+  :Logika sukcesu;
+endif
+:Wykonaj finally;
+:Sprzatanie zasobow;
+stop
+@enduml
+

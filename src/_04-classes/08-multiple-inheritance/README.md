@@ -2,101 +2,130 @@
 
 ## Cel
 
-Pokazać mechanizm MRO i bezpieczne użycie `super()` przy wielu klasach bazowych.
+Pokazać mechanizm MRO (Method Resolution Order) i bezpieczne użycie `super()` przy wielu klasach bazowych.
 
-## Teoria i intuicja
+## Teoria
 
-W Pythonie porządek rozwiązywania metod (MRO) jest deterministyczny i opiera się o algorytm C3.
+### Problem „diamentu" i algorytm C3
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+Gdy klasa dziedziczy po dwóch klasach, które mają wspólnego przodka, powstaje problem
+**„diamentu"** — niejednoznaczność, z której klasy pochodzi metoda.
+
+```
+     Base
+    /    \
+  A        B
+    \    /
+      C
+```
+
+Python rozwiązuje to przez **liniaryzację C3** (Python 2.3+), która tworzy
+jednoznaczną **listę przeszukiwania (MRO)**:
+
+```python
+class Base: pass
+class A(Base): pass
+class B(Base): pass
+class C(A, B): pass
+
+print(C.mro())
+# [<C>, <A>, <B>, <Base>, <object>]
+```
+
+Metoda jest szukana **od lewej do prawej** w tej liście.
+
+### `super()` w wielodziedziczeniu
+
+`super()` nie wywołuje „klasy nadrzędnej" — wywołuje **następną klasę w MRO**:
+
+```python
+class LoggerMixin:
+    def describe(self) -> str:
+        return f"[LOG] {super().describe()}"
+
+class TimestampMixin:
+    def describe(self) -> str:
+        return f"[TS] {super().describe()}"
+
+class Base:
+    def describe(self) -> str:
+        return "base"
+
+class Event(LoggerMixin, TimestampMixin, Base):
+    pass
+
+print(Event().describe())
+# [LOG] [TS] base
+```
+
+Każde `super()` przekazuje wywołanie dalej wzdłuż MRO — to umożliwia **mixin-based composition**.
+
+### Mixiny — dobra praktyka
+
+Mixin to klasa **bez własnego stanu** (bez `__init__`), dostarczająca tylko zachowanie:
+
+```python
+class JsonMixin:
+    def to_json(self) -> str:
+        import json
+        return json.dumps(self.__dict__)
+```
 
 Diagram: `diagrams/topic_08.png`
 
-![Diagram tematu](diagrams/topic_08.png)
+![MRO i mixiny](diagrams/topic_08.png)
 
 ## Krok po kroku na kodzie
 
 Plik: `examples/multiple_inheritance.py`
 
 ```python
-class LoggerMixin:
-    def describe(self) -> str:
-        return "logger"
-
-class TimestampMixin:
-    def describe(self) -> str:
-        return "timestamp"
-
 class Event(LoggerMixin, TimestampMixin):
     @classmethod
     def describe_chain(cls) -> list[str]:
         return [c.__name__ for c in cls.mro()]
+
+    @classmethod
+    def source(cls) -> str:
+        return cls.mro()[1].__name__   # pierwszy mixin po samej klasie
 ```
 
-Uruchomienie:
-
-```bash
-python src/_04-classes/08-multiple-inheritance/examples/multiple_inheritance.py
+```python
+print(Event.describe_chain())   # ['Event', 'LoggerMixin', 'TimestampMixin', 'object']
+print(Event.source())           # 'LoggerMixin'
 ```
+
+## Mini-lab (krok po kroku)
+
+1. Uruchom `examples/multiple_inheritance.py`.
+2. Dodaj trzeci mixin i przeanalizuj nowe MRO.
+3. Zmień kolejność klas bazowych — obserwuj jak zmienia się MRO.
+4. Zastosuj `super()` w łańcuchu `describe` wszystkich mixinów.
+5. Sprawdź co się stanie gdy dwa mixiny mają metodę o tej samej nazwie.
+
+### Oczekiwany efekt
+
+- Student rozumie MRO i potrafi go odczytać przez `ClassName.mro()`.
+- Student potrafi bezpiecznie łączyć mixiny z klasą domenową.
 
 ## Zadanie do samodzielnego rozwiązania
-
-Zaimplementuj `source()` zwracające pierwszą klasę mixin z MRO.
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_08.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Dziedziczenie wielokrotne pojawiło się m.in. w CLOS i C++. Python wspiera je w pełni, ale rozwiązuje konflikty metod przez liniaryzację C3 (MRO). Dzięki temu porządek wyszukiwania metod jest jednoznaczny i przewidywalny.
-
-## Dodatkowy przykład kodu
-
-```python
-print(Event.describe_chain())
-print(Event.source())
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj trzeci mixin i przeanalizuj nowe MRO.
-2. Zastosuj `super()` w łańcuchu metod inicjalizujących.
-3. Porównaj wynik wywołań przy zmianie kolejności klas bazowych.
-4. Opisz, kiedy mixiny są dobrym wyborem architektonicznym.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: zaimplementuj metodę `source()` zwracającą nazwę pierwszego mixinu w MRO.
 
 ## Pytania egzaminacyjne
 
-1. Co to jest MRO i jak działa w Pythonie?
+1. Co to jest MRO i jak działa algorytm C3?
 2. Dlaczego kolejność klas bazowych ma znaczenie?
-3. Jak poprawnie łączyć mixiny z klasą domenową?
-4. Jakie pułapki pojawiają się bez `super()` w wielodziedziczeniu?
+3. Jak `super()` zachowuje się w wielodziedziczeniu?
+4. Czym jest mixin i kiedy go stosować?
 5. Kiedy lepiej użyć kompozycji zamiast wielodziedziczenia?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/reference/datamodel.html#mro
+- https://www.python.org/download/releases/2.3/mro/
+- L. Ramalho, *Fluent Python*, rozdz. „Multiple Inheritance and Method Resolution Order".

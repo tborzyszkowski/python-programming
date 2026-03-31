@@ -49,11 +49,15 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pytest src\_01-introduction -v
 .venv\Scripts\python.exe -m pytest src\_02-functions -v
 .venv\Scripts\python.exe -m pytest src\_03-modules -c src\_03-modules\pytest.ini -v
+.venv\Scripts\python.exe -m pytest src\_04-classes -c src\_04-classes\pytest.ini -v
+.venv\Scripts\python.exe -m pytest src\_05-exceptions -c src\_05-exceptions\pytest.ini -v
 
 # Po aktywacji venv (każdy system):
 python -m pytest src/_01-introduction -v
 python -m pytest src/_02-functions -v
 python -m pytest src/_03-modules -c src/_03-modules/pytest.ini -v
+python -m pytest src/_04-classes -c src/_04-classes/pytest.ini -v
+python -m pytest src/_05-exceptions -c src/_05-exceptions/pytest.ini -v
 ```
 
 ### 4. Wygeneruj diagramy PNG z plików PlantUML
@@ -63,13 +67,17 @@ python -m pytest src/_03-modules -c src/_03-modules/pytest.ini -v
 .venv\Scripts\python.exe src\_01-introduction\generate_diagrams.py
 .venv\Scripts\python.exe src\_02-functions\generate_diagrams.py
 .venv\Scripts\python.exe src\_03-modules\generate_diagrams.py
+.venv\Scripts\python.exe src\_04-classes\generate_diagrams.py
+.venv\Scripts\python.exe src\_05-exceptions\generate_diagrams.py
 ```
 
 ## Moduły kursu
 
 - [`src/_01-introduction/README.md`](src/_01-introduction/README.md) - wprowadzenie do Pythona 3 (typy, sterowanie, uruchamianie, mutowalność)
 - [`src/_02-functions/README.md`](src/_02-functions/README.md) - funkcje w Pythonie 3 (definicje, argumenty, lambda, SRP)
-- [`src/_03-modules/README.md`](src/_03-modules/README.md) - moduly, importy, pakiety, pycache i zarzadzanie zaleznosciami
+- [`src/_03-modules/README.md`](src/_03-modules/README.md) - moduły, importy, pakiety, pycache i zarządzanie zależnościami
+- [`src/_04-classes/README.md`](src/_04-classes/README.md) - klasy i programowanie obiektowe (dziedziczenie, polimorfizm, wzorce projektowe)
+- [`src/_05-exceptions/README.md`](src/_05-exceptions/README.md) - wyjątki, obsługa plików i serializacja (`pickle`)
 
 ## Jak wybrać moduł na start?
 
@@ -77,7 +85,9 @@ Dla studentów I roku polecana kolejność pracy:
 
 1. **`_01-introduction`** - fundamenty składni i modelu działania Pythona.
 2. **`_02-functions`** - budowanie modularnego kodu, funkcje wyższego rzędu i dobre praktyki projektowe.
-3. **`_03-modules`** - praca z modulami i pakietami, import system i dobre praktyki ekosystemu.
+3. **`_03-modules`** - praca z modułami i pakietami, import system i dobre praktyki ekosystemu.
+4. **`_04-classes`** - programowanie obiektowe: klasy, dziedziczenie, polimorfizm, interfejsy.
+5. **`_05-exceptions`** - obsługa błędów, pliki tekstowe i binarne, serializacja.
 
 Sugerowany rytm nauki:
 - najpierw przeczytaj `README.md` wybranego tematu,
@@ -124,6 +134,30 @@ python-programming/
         ├── 07-packages-and-init/
         ├── 08-advanced-import-topics/
         └── 09-dependency-management/
+    ├── _04-classes/
+        ├── pytest.ini            # konfiguracja pytest dla modułu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-class-vs-object/
+        ├── 02-class-definition-and-object-creation/
+        ├── 03-self-parameter/
+        ├── 04-instance-vs-class-members/
+        ├── 05-private-members/
+        ├── 06-special-methods/
+        ├── 07-inheritance-basics/
+        ├── 08-multiple-inheritance/
+        ├── 09-polymorphism/
+        ├── 10-large-example-inheritance-polymorphism/
+        ├── 11-interfaces-in-python/
+        └── 12-design-patterns-polymorphism/
+    └── _05-exceptions/
+        ├── pytest.ini            # konfiguracja pytest dla modułu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-exception-vs-error/     # wyjątek vs błąd
+        ├── 02-try-except-else-finally/ # pełny schemat obsługi
+        ├── 03-custom-exceptions/      # własne wyjątki
+        ├── 04-built-in-exceptions/    # wyjątki wbudowane
+        ├── 05-file-handling-caesar-cipher/ # pliki + szyfr Cezara
+        └── 06-pickle-and-serialization/    # pickle i serializacja
 ```
 
 ## Zależności

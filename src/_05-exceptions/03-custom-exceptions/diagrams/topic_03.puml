@@ -1,0 +1,16 @@
+@startuml
+skinparam monochrome true
+title Hierarchia wyjatkow domenowych
+
+class RegistrationError
+class InvalidStudentIdError
+class DuplicateStudentError
+
+RegistrationError <|-- InvalidStudentIdError
+RegistrationError <|-- DuplicateStudentError
+
+note right of RegistrationError
+Klasa bazowa dla bledow rejestracji
+end note
+@enduml
+

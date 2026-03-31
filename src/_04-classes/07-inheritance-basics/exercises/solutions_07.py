@@ -1,6 +1,6 @@
 class Vehicle:
     def move(self) -> str:
-        return "Pojazd przemieszcza się"
+        return "Pojazd przemieszcza sie"
 
 
 class Train(Vehicle):

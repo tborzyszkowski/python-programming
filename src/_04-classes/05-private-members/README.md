@@ -2,20 +2,62 @@
 
 ## Cel
 
-Wyjaśnić konwencje prywatności (`_name`) i name mangling (`__name`).
+Wyjaśnić konwencje prywatności (`_name`, `__name`) i mechanizm name mangling.
 
-## Teoria i intuicja
+## Teoria
 
-Python preferuje konwencje prywatności. `__name` uruchamia name mangling i ogranicza przypadkowy dostęp.
+### Trzy poziomy widoczności
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+Python nie ma twardych modyfikatorów dostępu jak `private` w Javie.
+Zamiast tego stosuje **konwencje i ograniczenia techniczne**:
+
+| Notacja | Znaczenie | Dostępność |
+|---|---|---|
+| `name` | Publiczny | Wszędzie |
+| `_name` | Wewnętrzny (umowna prywatność) | Wszędzie technicznie, ale konwencja mówi: nie dotykaj spoza klasy |
+| `__name` | Mocno prywatny (name mangling) | Dostępny tylko jako `_ClassName__name` |
+
+### Name mangling — co to jest?
+
+```python
+class TemperatureSensor:
+    def __init__(self) -> None:
+        self.__calibration = 0.0   # Python zamienia na _TemperatureSensor__calibration
+```
+
+```python
+sensor = TemperatureSensor()
+print(sensor.__calibration)              # AttributeError!
+print(sensor._TemperatureSensor__calibration)  # 0.0 — technicznie możliwe
+```
+
+Cel: **ochrona przed przypadkowym nadpisaniem** w podklasach, nie przed celowym dostępem.
+
+### Właściwości (`@property`) jako czyste API
+
+```python
+class TemperatureSensor:
+    def __init__(self, celsius: float) -> None:
+        self._celsius = celsius
+
+    @property
+    def temperature(self) -> float:
+        """Odczyt temperatury (tylko do odczytu)."""
+        return self._celsius
+
+    @temperature.setter
+    def temperature(self, value: float) -> None:
+        if value < -273.15:
+            raise ValueError("Poniżej zera absolutnego")
+        self._celsius = value
+```
+
+`@property` umożliwia **kontrolowany dostęp** bez zmiany API (pole wygląda jak atrybut,
+a wewnętrznie jest obliczane lub walidowane).
 
 Diagram: `diagrams/topic_05.png`
 
-![Diagram tematu](diagrams/topic_05.png)
+![Prywatność i name mangling](diagrams/topic_05.png)
 
 ## Krok po kroku na kodzie
 
@@ -32,71 +74,41 @@ class TemperatureSensor:
 
     def read(self) -> float:
         return self._celsius + self.__calibration_offset
+
+    def is_overheated(self, threshold: float) -> bool:
+        return self.read() > threshold
 ```
 
-Uruchomienie:
+## Mini-lab (krok po kroku)
 
-```bash
-python src/_04-classes/05-private-members/examples/private_members.py
-```
+1. Uruchom `examples/private_members.py`.
+2. Spróbuj uzyskać `sensor.__calibration_offset` spoza klasy — sprawdź błąd.
+3. Uzyj `dir(sensor)` i znajdź zniekształconą nazwę.
+4. Dodaj `@property` dla bieżącej temperatury z walidacją w setterze.
+5. Napisz test sprawdzający, że walidacja blokuje temperaturę < −273.
+
+### Oczekiwany efekt
+
+- Student rozumie różnicę między `_x` i `__x`.
+- Student potrafi używać `@property` do budowania czytelnego API.
 
 ## Zadanie do samodzielnego rozwiązania
-
-Dodaj metodę `is_overheated(threshold)` opartą o odczyt z `read()`.
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_05.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Python stosuje zasadę „consenting adults”: zamiast twardych barier dostępu preferuje konwencje. Dlatego `_name` sygnalizuje „użytek wewnętrzny”, a `__name` uruchamia mechanizm *name mangling*, który chroni głównie przed przypadkowym nadpisaniem.
-
-## Dodatkowy przykład kodu
-
-```python
-sensor = TemperatureSensor(65.0)
-sensor.set_calibration(1.5)
-print(sensor.read())
-print(sensor.is_overheated(66.0))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj właściwość tylko-do-odczytu dla bieżącej temperatury.
-2. Zaimplementuj walidację kalibracji (zakres wartości).
-3. Pokaż w kodzie, jak działa name mangling dla `__calibration_offset`.
-4. Porównaj `_pole` i `__pole` pod względem bezpieczeństwa API.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: dopisz metodę `is_overheated(threshold: float) -> bool`.
 
 ## Pytania egzaminacyjne
 
 1. Czy Python ma prawdziwie prywatne pola? Uzasadnij.
 2. Po co używa się konwencji `_name`?
-3. Co robi mechanizm name mangling i jakie ma ograniczenia?
-4. Jak projektować API klasy, by nie ujawniać zbędnych szczegółów?
-5. Kiedy lepiej użyć metody niż bezpośredniego dostępu do pola?
+3. Co robi name mangling i jakie ma ograniczenia?
+4. Jak `@property` pomaga ukryć szczegóły implementacji?
+5. Kiedy użyć `__name` zamiast `_name`?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/tutorial/classes.html#private-variables
+- https://docs.python.org/3/library/functions.html#property

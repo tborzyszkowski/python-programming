@@ -2,24 +2,38 @@
 
 ## Cel
 
-Zrozumieć polimorfizm dynamiczny i ideę „programuj do interfejsu, nie implementacji”.
+Zrozumieć polimorfizm dynamiczny i ideę „programuj do interfejsu, nie do implementacji".
 
-## Teoria i intuicja
+## Teoria
 
-Polimorfizm oznacza, że ten sam komunikat (`area`) może mieć różne implementacje zależnie od typu obiektu.
+### Skąd pochodzi polimorfizm?
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+Termin pochodzi z greki: *poly* (wiele) + *morphe* (kształt).
+W OOP oznacza, że ten sam **komunikat** (`area()`) może mieć różne **implementacje** zależnie od
+faktycznego typu obiektu — wybranego dopiero w czasie wykonania (*late binding*).
 
-Diagram: `diagrams/topic_09.png`
+Alan Kay (twórca Smalltalka) powiedział: „OOP to przesyłanie komunikatów".
+Polimorfizm jest fundamentem tej idei.
 
-![Diagram tematu](diagrams/topic_09.png)
+### Duck typing a polimorfizm w Pythonie
 
-## Krok po kroku na kodzie
+Python stosuje **duck typing**: obiekt nie musi dziedziczyć po określonej klasie bazowej,
+wystarczy że implementuje oczekiwane metody.
 
-Plik: `examples/polymorphism_demo.py`
+```python
+class Duck:
+    def quack(self) -> str:
+        return "Quack!"
+
+class Person:
+    def quack(self) -> str:
+        return "I'm quacking like a duck!"
+
+def make_it_quack(duck) -> None:
+    print(duck.quack())   # działa dla Duck i Person
+```
+
+### Hierarchia klas + polimorfizm = otwartość na rozszerzenie
 
 ```python
 class Shape:
@@ -27,84 +41,73 @@ class Shape:
         raise NotImplementedError
 
 class Rectangle(Shape):
-    def __init__(self, w: float, h: float) -> None:
-        self.w = w
-        self.h = h
-
     def area(self) -> float:
         return self.w * self.h
 
 class Circle(Shape):
-    def __init__(self, r: float) -> None:
-        self.r = r
-
     def area(self) -> float:
-        return 3.14159 * self.r * self.r
+        return math.pi * self.r ** 2
 ```
 
-Uruchomienie:
+Funkcja `total_area(shapes)` działa bez zmian gdy dodajemy nowe figury:
 
-```bash
-python src/_04-classes/09-polymorphism/examples/polymorphism_demo.py
+```python
+def total_area(shapes: list[Shape]) -> float:
+    return sum(s.area() for s in shapes)
 ```
+
+To jest zasada **Open/Closed**: otwarta na rozszerzenie, zamknięta na modyfikację.
+
+Diagram: `diagrams/topic_09.png`
+
+![Polimorfizm figur geometrycznych](diagrams/topic_09.png)
+
+## Krok po kroku na kodzie
+
+Plik: `examples/polymorphism_demo.py` — rozszerzona wersja z `Triangle`, `perimeter`, `describe`, `main`.
+
+```python
+shapes: list[Shape] = [
+    Rectangle(3, 4),
+    Circle(2),
+    Triangle(6, 4, 6, 5, 5),
+]
+for shape in shapes:
+    print(shape.describe())   # każdy wie, jak się opisać
+print(f"Łączna powierzchnia: {total_area(shapes):.2f}")
+```
+
+## Mini-lab (krok po kroku)
+
+1. Uruchom `examples/polymorphism_demo.py`.
+2. Dodaj klasę `Square(Rectangle)` — czy `total_area` działa bez zmian?
+3. Napisz funkcję `largest_shape(shapes)` zwracającą figurę o największym polu.
+4. Zamień `raise NotImplementedError` w `Shape` na `@abstractmethod` z `abc`.
+5. Sprawdź co się stanie przy próbie tworzenia instancji `Shape` z `abstractmethod`.
+
+### Oczekiwany efekt
+
+- Student rozumie polimorfizm dynamiczny i duck typing.
+- Student potrafi pisać funkcje działające na kolekcjach polimorficznych obiektów.
 
 ## Zadanie do samodzielnego rozwiązania
-
-Dodaj klasę `Triangle` z metodą `area`.
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_09.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-Polimorfizm wywodzi się z idei późnego wiązania (late binding): klient wywołuje operację, ale konkretna implementacja zależy od typu obiektu w czasie wykonania. W Pythonie ten mechanizm jest naturalny dzięki dynamicznemu modelowi obiektów.
-
-## Dodatkowy przykład kodu
-
-```python
-shapes = [Rectangle(3, 4), Circle(2)]
-areas = [shape.area() for shape in shapes]
-print(areas)
-print(sum(areas))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj nową figurę `Triangle` i oblicz jej pole.
-2. Napisz funkcję przyjmującą listę obiektów `Shape`.
-3. Sprawdź, że funkcja działa bez zmian po dodaniu nowej klasy.
-4. Zastanów się, jak to wspiera zasadę Open/Closed.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: napisz klasę `Triangle(Shape)` z metodą `area()` i konstruktorem `(base, height)`.
 
 ## Pytania egzaminacyjne
 
 1. Zdefiniuj polimorfizm i podaj przykład w Pythonie.
-2. Dlaczego polimorfizm redukuje liczbę instrukcji `if/elif`?
-3. Co to znaczy „programuj do interfejsu”?
+2. Co to jest duck typing i jak różni się od polimorfizmu nominalnego?
+3. Dlaczego polimorfizm redukuje liczbę instrukcji `if/elif`?
 4. Jak testować kod oparty o polimorfizm?
-5. Jakie zależności projektowe zmniejsza polimorfizm?
+5. Na czym polega zasada Open/Closed i jak wiąże się z polimorfizmem?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/tutorial/classes.html
+- https://docs.python.org/3/glossary.html#term-duck-typing
+- B. Meyer, *Object-Oriented Software Construction*, rozdz. „Polymorphism".

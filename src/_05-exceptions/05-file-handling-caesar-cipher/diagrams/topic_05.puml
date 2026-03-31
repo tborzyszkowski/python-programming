@@ -1,0 +1,13 @@
+@startuml
+skinparam monochrome true
+title Szyfrowanie pliku szyfrem Cezara
+
+start
+:Otworz plik wejsciowy;
+:Wczytaj tekst;
+:Przeksztalc znaki (shift);
+:Zapisz tekst do pliku wyjsciowego;
+:Zamknij pliki (with);
+stop
+@enduml
+

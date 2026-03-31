@@ -2,24 +2,31 @@
 
 ## Cel
 
-Pokazać współdziałanie dziedziczenia i polimorfizmu w mini-architekturze modułu uczelnianego.
+Pokazać współdziałanie dziedziczenia, polimorfizmu i wzorca Strategy w mini-architekturze systemu uczelnianego.
 
-## Teoria i intuicja
+## Teoria
 
-Przykład strategii oceniania: klasa `Course` deleguje logikę do obiektu polityki, co wspiera SRP i testowalność.
+### Wzorzec Strategy w pigułce
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+System oceniania musi wspierać różne metody obliczania wyniku końcowego.
+Zamiast używać serii `if/elif`, delegujemy algorytm do osobnego obiektu — **strategii**.
+
+Klasa `Course`:
+- nie wie, jak liczyć wynik,
+- zna tylko interfejs `GradePolicy.final_score`.
+
+Dzięki temu:
+- zmiana polityki oceniania nie wymaga modyfikacji `Course`,
+- każdą politykę można testować niezależnie,
+- nowa polityka to nowa klasa, nie nowa gałąź `if`.
+
+### Diagram architektury
 
 Diagram: `diagrams/topic_10.png`
 
-![Diagram tematu](diagrams/topic_10.png)
+![System ocen – strategy](diagrams/topic_10.png)
 
-## Krok po kroku na kodzie
-
-Plik: `examples/grading_system.py`
+### Kluczowe klasy
 
 ```python
 class GradePolicy:
@@ -44,57 +51,52 @@ class Course:
         return self.policy.final_score(points)
 ```
 
-Uruchomienie:
+## Krok po kroku na kodzie
 
-```bash
-python src/_04-classes/10-large-example-inheritance-polymorphism/examples/grading_system.py
+Plik: `examples/grading_system.py`
+
+```python
+course_mean = Course("Analiza", MeanPolicy())
+course_best = Course("Algebra", BestOfTwoPolicy())
+print(course_mean.evaluate([3.0, 4.0, 5.0]))   # 4.0
+print(course_best.evaluate([3.0, 4.0, 5.0]))   # 4.5
 ```
 
-## Zadanie do samodzielnego rozwiązania
+### Porównanie wersji bez wzorca i z wzorcem
 
-Dodaj `WeightedPolicy` i przetestuj obliczenie wyniku końcowego.
+```python
+# BEZ wzorca — trudne do rozszerzenia
+def evaluate(policy_name: str, points: list[float]) -> float:
+    if policy_name == "mean":
+        return sum(points) / len(points)
+    elif policy_name == "best_of_two":
+        ...   # kolejny elif przy każdej nowej polityce
+
+# Z wzorcem — Open/Closed
+def evaluate(policy: GradePolicy, points: list[float]) -> float:
+    return policy.final_score(points)
+```
+
+## Mini-lab (krok po kroku)
+
+1. Uruchom `examples/grading_system.py`.
+2. Dodaj `WeightedPolicy(w1, w2)` obliczającą: `points[0]*w1 + points[1]*w2`.
+3. Napisz test porównujący 3 strategie na tych samych danych.
+4. Przeanalizuj, które klasy spełniają SRP, a które nie.
+5. Dodaj walidację: polityki nie powinny akceptować pustych list.
+
+### Oczekiwany efekt
+
+- Student rozumie, jak strategia oddziela algorytm od kontekstu.
+- Student potrafi zaprojektować małą architekturę z testowalną logiką domenową.
+
+## Zadanie do samodzielnego rozwiązania
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_10.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-W większych systemach dziedziczenie i polimorfizm warto łączyć z separacją odpowiedzialności. Strategia oceniania to klasyczny przykład: algorytm można zmieniać bez modyfikacji klasy, która go używa.
-
-## Dodatkowy przykład kodu
-
-```python
-course_mean = Course("Analiza", MeanPolicy())
-course_best = Course("Algebra", BestOfTwoPolicy())
-print(course_mean.evaluate([3.0, 4.0, 5.0]))
-print(course_best.evaluate([3.0, 4.0, 5.0]))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj politykę `WeightedPolicy` z wagami.
-2. Dodaj walidację liczby punktów wejściowych.
-3. Dopis test porównujący 3 strategie na tych samych danych.
-4. Przeanalizuj, które klasy realizują SRP, a które nie.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: napisz klasę `WeightedPolicy(w1, w2)` z metodą `final_score(points)`.
 
 ## Pytania egzaminacyjne
 
@@ -104,9 +106,7 @@ print(course_best.evaluate([3.0, 4.0, 5.0]))
 4. Jak dodać nową politykę bez modyfikacji klasy `Course`?
 5. Jak zaprojektować testy dla wielu strategii jednocześnie?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- E. Gamma i in., *Design Patterns*, wzorzec Strategy.
+- https://docs.python.org/3/tutorial/classes.html

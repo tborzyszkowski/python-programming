@@ -2,20 +2,62 @@
 
 ## Cel
 
-Zrozumieć, że `self` wskazuje bieżący obiekt i wiąże metodę z konkretną instancją.
+Zrozumieć, że `self` wskazuje bieżący obiekt, wiąże metodę z konkretną instancją i dlaczego jest jawny.
 
-## Teoria i intuicja
+## Teoria
 
-`self` nie jest słowem kluczowym, ale kluczową konwencją. Oznacza bieżący obiekt i jego stan.
+### Dlaczego `self` jest jawny?
 
-W praktyce warto myśleć o tym temacie na trzech poziomach:
-1. model pojęciowy (co chcemy opisać),
-2. składnia Pythona (jak to zapisać),
-3. konsekwencje projektowe (testowalność, czytelność, rozszerzalność).
+W C++/Java bieżący obiekt kryje się pod **ukrytym** `this`.
+Python czyni to powiązanie **jawnym**: każda metoda instancji dostaje jako pierwszy parametr
+referencję do wywołującego obiektu. Nazwa `self` to konwencja, nie słowo kluczowe.
+
+```python
+class Counter:
+    def __init__(self) -> None:
+        self.value = 0
+
+    def increment(self) -> int:
+        self.value += 1
+        return self.value
+```
+
+Wywołanie `c.increment()` to syntaktyczny cukier na `Counter.increment(c)`:
+
+```python
+c = Counter()
+c.increment()             # wywołanie przez obiekt
+Counter.increment(c)      # wywołanie przez klasę — identyczny efekt
+```
+
+### Niezależność stanu instancji
+
+Każdy obiekt ma **własną kopię** atrybutów instancji:
+
+```python
+a = Counter()
+b = Counter()
+a.increment()
+a.increment()
+b.increment()
+print(a.value)  # 2
+print(b.value)  # 1  — stany niezależne!
+```
 
 Diagram: `diagrams/topic_03.png`
 
-![Diagram tematu](diagrams/topic_03.png)
+![Self – powiązanie metoda–instancja](diagrams/topic_03.png)
+
+### Typowy błąd: brak `self`
+
+```python
+class Broken:
+    def __init__(self):
+        value = 0        # lokalna zmienna, nie atrybut!
+
+    def get(self):
+        return self.value   # AttributeError!
+```
 
 ## Krok po kroku na kodzie
 
@@ -30,75 +72,41 @@ class Counter:
         self.value += 1
         return self.value
 
-if __name__ == "__main__":
-    counter = Counter()
-    print(counter.increment())
+    def add_many(self, n: int) -> int:
+        self.value += n
+        return self.value
 ```
 
-Uruchomienie:
+## Mini-lab (krok po kroku)
 
-```bash
-python src/_04-classes/03-self-parameter/examples/self_usage.py
-```
+1. Uruchom `examples/self_usage.py`.
+2. Stwórz dwa liczniki; zwiększ każdy inną liczbę razy i sprawdź niezależność stanów.
+3. Dodaj metodę `reset()` — zeruje `self.value`.
+4. Usuń `self` z sygnatury `increment` i sprawdź, co wypisze Python.
+5. Napisz test jednostkowy sprawdzający, że dwa liczniki nie wpływają na siebie.
+
+### Oczekiwany efekt
+
+- Student rozumie mechanizm wiązania metody z instancją.
+- Student umie wytłumaczyć, dlaczego `self` jest jawny w Pythonie.
 
 ## Zadanie do samodzielnego rozwiązania
-
-Napisz metodę `add_many(self, n)`, która zwiększa licznik o `n`.
 
 - szablon: `exercises/tasks.py`
 - przykładowe rozwiązanie: `exercises/solutions_03.py`
 - testy: `exercises/test_solutions.py`
 
-## Pytania kontrolne
-
-1. Jaki problem projektowy rozwiązuje ten mechanizm?
-2. Jak wyglądałaby wersja bez użycia klas?
-3. Jak przetestować to zachowanie jednostkowo?
-
-## Literatura
-
-- https://docs.python.org/3/tutorial/classes.html
-- https://docs.python.org/3/reference/datamodel.html
-
-## Kontekst historyczny i projektowy (rozszerzenie)
-
-W wielu językach istnieje ukryte odniesienie do bieżącego obiektu (`this` w C++/Java). Python czyni to odniesienie jawnym przez parametr `self`, co podnosi czytelność i ułatwia zrozumienie wiązania metod z obiektami.
-
-## Dodatkowy przykład kodu
-
-```python
-counter_a = Counter()
-counter_b = Counter()
-print(counter_a.add_many(2))
-print(counter_b.add_many(5))
-print(counter_a.add_many(1))
-```
-
-## Mini-lab rozszerzony (krok po kroku)
-
-1. Dodaj do klasy `Counter` metodę `reset()`.
-2. Utwórz dwa liczniki i pokaż, że ich stan jest niezależny.
-3. Dodaj test, który wykryłby przypadkowe współdzielenie stanu.
-4. Wyjaśnij, co się stanie po usunięciu `self` z sygnatury metody.
-
-### Kryteria zaliczenia mini-labu
-
-- kod przechodzi testy jednostkowe,
-- kod nie miesza warstwy logiki z warstwą wejścia/wyjścia,
-- student umie uzasadnić wybór konstrukcji obiektowych,
-- student potrafi wskazać miejsce potencjalnej refaktoryzacji.
+Zadanie: dopisz metodę `add_many(self, n: int) -> int` do klasy `Counter`.
 
 ## Pytania egzaminacyjne
 
 1. Dlaczego `self` w Pythonie jest parametrem jawnym?
-2. Co oznacza „wiązanie metody z instancją” w praktyce?
-3. Jak odróżnić metodę instancyjną od klasowej po sygnaturze?
-4. Dlaczego dwie instancje tej samej klasy mają osobny stan?
-5. Jakie błędy typowo pojawiają się przy niewłaściwym użyciu `self`?
+2. Co oznacza „wiązanie metody z instancją" w praktyce?
+3. Jaka jest różnica między `c.increment()` a `Counter.increment(c)`?
+4. Dlaczego dwie instancje tej samej klasy mają niezależny stan?
+5. Jakie błędy pojawiają się przy pominięciu `self` w ciele metody?
 
-## Dodatkowa literatura
+## Literatura
 
-- B. Meyer, *Object-Oriented Software Construction*.
-- G. Booch, *Object-Oriented Analysis and Design with Applications*.
-- Python Docs - Classes: https://docs.python.org/3/tutorial/classes.html
-- Python Docs - Data model: https://docs.python.org/3/reference/datamodel.html
+- https://docs.python.org/3/tutorial/classes.html
+- https://docs.python.org/3/faq/design.html#why-must-self-be-used-explicitly-in-method-definitions-and-calls

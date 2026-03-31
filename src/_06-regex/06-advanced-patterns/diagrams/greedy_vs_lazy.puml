@@ -1,5 +1,5 @@
 @startuml
-title Chciwy vs Leniwy – dopasowanie <.*> i <.*?> w "<b>tekst</b>"
+title Chciwy vs Leniwy kwantyfikator
 
 skinparam sequence {
     ParticipantBackgroundColor LightYellow
@@ -7,35 +7,35 @@ skinparam sequence {
     LifeLineBorderColor Gray
 }
 
-participant "Wejście\n\"<b>tekst</b>\"" as S
-participant "Silnik\n(chciwy <.*>)" as G
-participant "Silnik\n(leniwy <.*?>)" as L
+participant "Wejscie" as S
+participant "Chciwy (.*)" as G
+participant "Leniwy (.*?)" as L
 
 note over G
-  Chciwy: dopasuj jak najwięcej
-  Krok 1: < dopasowuje '<'
-  Krok 2: .* pochłania "b>tekst</b>"
-  Krok 3: > nie pasuje na końcu
-  Krok 4: COFANIE – oddaj 1 znak
-  Krok 5: .* = "b>tekst</b" – > pasuje!
-  Wynik: "<b>tekst</b>"
+  Chciwy: dopasuj jak najwiecej
+  Krok 1: dopasuj otwierajacy tag
+  Krok 2: .* pochlania caly tekst
+  Krok 3: nie pasuje na koncu
+  Krok 4: COFANIE - oddaj 1 znak
+  Krok 5: dopasowuje zamykajacy tag
+  Wynik: calosc od pierwszego
+  do ostatniego tagu
 end note
 
 note over L
   Leniwy: dopasuj jak najmniej
-  Krok 1: < dopasowuje '<'
-  Krok 2: .*? = "" (zero znaków)
-  Krok 3: > nie pasuje ('b')
-  Krok 4: rozszerz o 1 znak → .*? = "b"
-  Krok 5: > pasuje!
-  Wynik: "<b>"
+  Krok 1: dopasuj otwierajacy tag
+  Krok 2: .*? = "" (zero znakow)
+  Krok 3: nie pasuje
+  Krok 4: rozszerz o 1 znak
+  Krok 5: dopasowuje zamykajacy tag
+  Wynik: tylko pierwszy tag
 end note
 
-G -> S : re.search(r'<.*>', s)
-S --> G : "<b>tekst</b>"
+G -> S : findall(chciwy, tekst)
+S --> G : jedno duze dopasowanie
 
-L -> S : re.search(r'<.*?>', s)
-S --> L : "<b>"
+L -> S : findall(leniwy, tekst)
+S --> L : lista krotkich dopasowan
 
 @enduml
-

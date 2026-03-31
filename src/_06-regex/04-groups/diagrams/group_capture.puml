@@ -1,5 +1,5 @@
 @startuml
-title Przechwytywanie grup – wzorzec (?P<rok>\\d{4})-(?P<m>\\d{2})-(?P<d>\\d{2})
+title Przechwytywanie grup
 
 skinparam sequence {
     ParticipantBackgroundColor LightYellow
@@ -7,36 +7,35 @@ skinparam sequence {
     ArrowColor DarkBlue
 }
 
-participant "Napis\n\"2024-03-15\"" as S
-participant "Silnik re" as E
-participant "Match\nobject" as M
+participant Napis as S
+participant Silnik as E
+participant Match as M
 
 S -> E : re.search(pattern, s)
 activate E
 
-E -> E : dopasuj (?P<rok>\\d{4}) → "2024"
-E -> E : dopasuj - (literal)
-E -> E : dopasuj (?P<m>\\d{2}) → "03"
-E -> E : dopasuj - (literal)
-E -> E : dopasuj (?P<d>\\d{2}) → "15"
+E -> E : dopasuj rok (grupa 1)
+E -> E : dopasuj separator
+E -> E : dopasuj miesiac (grupa 2)
+E -> E : dopasuj separator
+E -> E : dopasuj dzien (grupa 3)
 
-E -> M : utwórz Match object
+E -> M : utworz Match object
 deactivate E
 
-M --> S : .group(0)    → "2024-03-15"
-M --> S : .group(1)    → "2024"
-M --> S : .group("rok") → "2024"
-M --> S : .group("m")  → "03"
-M --> S : .group("d")  → "15"
-M --> S : .groupdict() → {'rok':'2024','m':'03','d':'15'}
+M --> S : .group(0) cale dopasowanie
+M --> S : .group(1) rok
+M --> S : .group("rok") nazwana
+M --> S : .group("m") miesiac
+M --> S : .group("d") dzien
+M --> S : .groupdict() slownik
 
 note over M
-  Grupy numerowane od 1
-  (0 = całe dopasowanie).
-  Nazwane grupy: (?P<name>...)
-  dostępne przez .group("name")
-  lub .groupdict()
+  Grupy numerowane od 1.
+  group(0) = cale dopasowanie.
+  Nazwane grupy dostepne
+  przez .group("name")
+  lub .groupdict().
 end note
 
 @enduml
-

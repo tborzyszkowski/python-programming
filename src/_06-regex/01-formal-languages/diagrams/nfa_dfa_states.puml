@@ -1,0 +1,51 @@
+@startuml
+title NFA vs DFA – wzorzec ab*c
+
+skinparam state {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontName Monospaced
+}
+
+state "NFA" as NFA {
+    state "q0\n(start)" as N0
+    state "q1" as N1
+    state "q2\n(akceptujący)" as N2 #LightGreen
+
+    [*] --> N0
+    N0 --> N1 : a
+    N1 --> N1 : b
+    N1 --> N2 : c
+    N2 --> [*]
+}
+
+state "DFA (równoważny)" as DFA {
+    state "s0\n(start)" as D0
+    state "s1" as D1
+    state "s2\n(akceptujący)" as D2 #LightGreen
+    state "DEAD\n(martwy)" as DD #LightCoral
+
+    [*] --> D0
+    D0 --> D1 : a
+    D0 --> DD : b,c
+    D1 --> D1 : b
+    D1 --> D2 : c
+    D1 --> DD : a
+    D2 --> DD : a,b,c
+    DD --> DD : a,b,c
+}
+
+note bottom of NFA
+  NFA: może mieć wiele przejść
+  z jednego stanu dla tego samego symbolu.
+  Python używa silnika NFA (z backtrackingiem).
+end note
+
+note bottom of DFA
+  DFA: dokładnie jedno przejście
+  dla każdego symbolu z każdego stanu.
+  Szybszy, ale trudniejszy do budowy.
+end note
+
+@enduml
+

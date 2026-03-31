@@ -1,0 +1,22 @@
+@startuml
+title Efekty flag modułu re
+
+skinparam table {
+    HeaderBackgroundColor DarkOrange
+    HeaderFontColor White
+    BorderColor DarkOrange
+    RowBackgroundColor LightYellow
+}
+
+legend
+|= Flaga |= Skrót |= Inline |= Co zmienia |= Przykład |
+| re.IGNORECASE | re.I | (?i) | Wielkość liter nie ma znaczenia | "Python" pasuje do r"python" |
+| re.MULTILINE  | re.M | (?m) | ^ i $ dla każdej linii        | r"^\\w+" w "a\nb" → ['a','b'] |
+| re.DOTALL     | re.S | (?s) | . dopasowuje też \\n           | r"<.*>" w "<a>\n</a>" → Match |
+| re.VERBOSE    | re.X | (?x) | Białe znaki i # są ignorowane  | Czytelne wzorce z komentarzami |
+| re.ASCII      | re.A | (?a) | \\w \\d \\s tylko ASCII          | \\w nie pasuje do "ą ę ó"      |
+| re.UNICODE    | re.U | –   | \\w \\d \\s Unicode (domyślne)  | \\w pasuje do "ą ę ó"          |
+endlegend
+
+@enduml
+

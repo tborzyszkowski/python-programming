@@ -1,0 +1,41 @@
+@startuml
+title Chciwy vs Leniwy – dopasowanie <.*> i <.*?> w "<b>tekst</b>"
+
+skinparam sequence {
+    ParticipantBackgroundColor LightYellow
+    ParticipantBorderColor DarkOrange
+    LifeLineBorderColor Gray
+}
+
+participant "Wejście\n\"<b>tekst</b>\"" as S
+participant "Silnik\n(chciwy <.*>)" as G
+participant "Silnik\n(leniwy <.*?>)" as L
+
+note over G
+  Chciwy: dopasuj jak najwięcej
+  Krok 1: < dopasowuje '<'
+  Krok 2: .* pochłania "b>tekst</b>"
+  Krok 3: > nie pasuje na końcu
+  Krok 4: COFANIE – oddaj 1 znak
+  Krok 5: .* = "b>tekst</b" – > pasuje!
+  Wynik: "<b>tekst</b>"
+end note
+
+note over L
+  Leniwy: dopasuj jak najmniej
+  Krok 1: < dopasowuje '<'
+  Krok 2: .*? = "" (zero znaków)
+  Krok 3: > nie pasuje ('b')
+  Krok 4: rozszerz o 1 znak → .*? = "b"
+  Krok 5: > pasuje!
+  Wynik: "<b>"
+end note
+
+G -> S : re.search(r'<.*>', s)
+S --> G : "<b>tekst</b>"
+
+L -> S : re.search(r'<.*?>', s)
+S --> L : "<b>"
+
+@enduml
+

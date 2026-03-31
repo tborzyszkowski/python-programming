@@ -1,0 +1,42 @@
+@startuml
+title Przechwytywanie grup – wzorzec (?P<rok>\\d{4})-(?P<m>\\d{2})-(?P<d>\\d{2})
+
+skinparam sequence {
+    ParticipantBackgroundColor LightYellow
+    ParticipantBorderColor DarkOrange
+    ArrowColor DarkBlue
+}
+
+participant "Napis\n\"2024-03-15\"" as S
+participant "Silnik re" as E
+participant "Match\nobject" as M
+
+S -> E : re.search(pattern, s)
+activate E
+
+E -> E : dopasuj (?P<rok>\\d{4}) → "2024"
+E -> E : dopasuj - (literal)
+E -> E : dopasuj (?P<m>\\d{2}) → "03"
+E -> E : dopasuj - (literal)
+E -> E : dopasuj (?P<d>\\d{2}) → "15"
+
+E -> M : utwórz Match object
+deactivate E
+
+M --> S : .group(0)    → "2024-03-15"
+M --> S : .group(1)    → "2024"
+M --> S : .group("rok") → "2024"
+M --> S : .group("m")  → "03"
+M --> S : .group("d")  → "15"
+M --> S : .groupdict() → {'rok':'2024','m':'03','d':'15'}
+
+note over M
+  Grupy numerowane od 1
+  (0 = całe dopasowanie).
+  Nazwane grupy: (?P<name>...)
+  dostępne przez .group("name")
+  lub .groupdict()
+end note
+
+@enduml
+

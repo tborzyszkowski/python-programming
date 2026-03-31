@@ -1,0 +1,42 @@
+@startuml
+title Dobór funkcji modułu re
+
+skinparam activity {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+    FontName Arial
+}
+
+start
+:Masz wzorzec i napis;
+
+if (Chcesz sprawdzić\ncały napis?) then (tak)
+    :re.fullmatch(pattern, s);
+    note right: Walidacja formatu\n(email, data, PESEL)
+    stop
+else (nie)
+    if (Szukasz na\npoczątku napisu?) then (tak)
+        :re.match(pattern, s);
+        note right: Parsowanie\nprotokołów, prefiksów
+        stop
+    else (nie)
+        if (Potrzebujesz\nwszystkich dopasowań?) then (tak)
+            if (Potrzebujesz\npozycji / grup?) then (tak)
+                :re.finditer(pattern, s);
+                note right: Iteracja po Match objects\nze .span(), .group()
+                stop
+            else (nie)
+                :re.findall(pattern, s);
+                note right: Lista napisów\nlub lista krotek
+                stop
+            endif
+        else (nie)
+            :re.search(pattern, s);
+            note right: Pierwsze wystąpienie\ngdziekolwiek w napisie
+            stop
+        endif
+    endif
+endif
+
+@enduml
+

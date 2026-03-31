@@ -1,0 +1,50 @@
+@startuml
+title Pipeline walidacji i ekstrakcji danych
+
+skinparam activity {
+    BackgroundColor LightYellow
+    BorderColor DarkOrange
+}
+skinparam ArrowColor DarkBlue
+
+|Wejście|
+start
+:Surowy tekst / dane od użytkownika;
+
+|Kompilacja wzorców|
+:re.compile(pattern)\n(raz, przy starcie aplikacji);
+
+|Walidacja formatu|
+if (re.fullmatch pasuje?) then (tak)
+    :Dane mają poprawny format;
+else (nie)
+    :Odrzuć / zwróć błąd;
+    stop
+endif
+
+|Walidacja semantyki|
+note right
+  Regex sprawdza FORMAT.
+  Semantykę sprawdzamy kodem:
+  PESEL – suma kontrolna,
+  data – zakres miesięcy/dni.
+end note
+if (Logika biznesowa OK?) then (tak)
+else (nie)
+    :Odrzuć / zwróć błąd;
+    stop
+endif
+
+|Ekstrakcja / Transformacja|
+:re.findall / re.finditer\nre.sub z grupami;
+:Słownik / lista wyników;
+
+|Maskowanie (GDPR)|
+:re.sub('[EMAIL]')\nre.sub('[PHONE]');
+
+|Wyjście|
+:Czyste, walidowane dane;
+stop
+
+@enduml
+

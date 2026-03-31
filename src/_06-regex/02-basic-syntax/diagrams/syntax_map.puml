@@ -1,0 +1,38 @@
+@startuml
+title Mapa składni wyrażeń regularnych
+
+skinparam mindmapNodeBackgroundColor LightYellow
+skinparam mindmapNodeBorderColor DarkOrange
+
+@startmindmap
+* Regex
+** Klasy znaków
+*** . (dowolny)
+*** \\d (cyfra)
+*** \\w (słowo)
+*** \\s (biały)
+*** [abc] (zbiór)
+*** [^abc] (negacja)
+*** [a-z] (zakres)
+** Kotwice
+*** ^ (początek)
+*** $ (koniec)
+*** \\b (granica słowa)
+*** \\B (brak granicy)
+** Kwantyfikatory
+*** * (0 lub więcej)
+*** + (1 lub więcej)
+*** ? (0 lub 1)
+*** {n} (dokładnie n)
+*** {n,m} (od n do m)
+** Alternacja
+*** a|b (a albo b)
+** Metaznaki dosłowne
+*** \\. \\* \\+ \\?
+*** re.escape()
+** Surowe stringi
+*** r"\\d+" zamiast "\\\\d+"
+@endmindmap
+
+@enduml
+

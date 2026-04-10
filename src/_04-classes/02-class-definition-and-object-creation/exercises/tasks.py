@@ -22,3 +22,12 @@ class BankAccount:
 def safe_transfer(src: "BankAccount", dst: "BankAccount", amount: float) -> None:
     """Przenieś amount z konta src na dst w sposób bezpieczny."""
     raise NotImplementedError
+
+
+def total_balance(accounts: list["BankAccount"]) -> float:
+    """Zwróć sumę sald wszystkich kont.
+
+    Przykład:
+        total_balance([BankAccount("A", 100), BankAccount("B", 200)])  ->  300.0
+    """
+    raise NotImplementedError

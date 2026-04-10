@@ -10,7 +10,7 @@ Zrozumieć relację „jest-rodzajem" (is-a), nadpisywanie metod i rolę `super(
 
 Dziedziczenie (ang. *inheritance*) pojawiło się w Simula jako sposób na **ponowne użycie
 definicji klas** bez kopiowania kodu. W klasycznym OOP hierarchia klas modeluje
-hierarchię pojęć w domenie: `Pojazd → Samochód → SportowyS amochód`.
+hierarchię pojęć w domenie: `Pojazd → Samochód → SportowySamochód`.
 
 ### Mechanizm dziedziczenia w Pythonie
 

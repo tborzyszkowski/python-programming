@@ -1,4 +1,4 @@
-"""Przyklad modulu z opcjonalnym trybem skryptowym."""
+"""Przykład modułu z opcjonalnym trybem skryptowym."""
 
 
 def add(a: float, b: float) -> float:

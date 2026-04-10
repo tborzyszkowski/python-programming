@@ -1,4 +1,4 @@
-"""Proste porownanie listy zaleznosci."""
+"""Proste porównanie listy zależności."""
 
 
 def compare_specs(requirements: set[str], pyproject: set[str]) -> dict[str, set[str]]:

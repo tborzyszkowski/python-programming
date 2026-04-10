@@ -1,4 +1,4 @@
-from solutions_import_mechanism import classify_spec_origin, is_visible_on_path
+from solutions_import_mechanism import classify_spec_origin, is_visible_on_path, diagnose_import_error
 
 
 def test_classify_spec_origin():
@@ -10,4 +10,21 @@ def test_classify_spec_origin():
 def test_is_visible_on_path():
     entries = ["C:/work", "C:/work/src"]
     assert is_visible_on_path(entries, "C:/work/src") is True
+
+
+def test_is_visible_not_found():
+    entries = ["C:/work"]
+    assert is_visible_on_path(entries, "C:/other") is False
+
+
+def test_diagnose_cached():
+    assert diagnose_import_error("json", ["/usr/lib"], {"json": "<module>"}) == "cached"
+
+
+def test_diagnose_found():
+    assert diagnose_import_error("requests", ["/usr/lib/python3/site-packages"], {}) == "found"
+
+
+def test_diagnose_not_found():
+    assert diagnose_import_error("xyz", ["/usr/lib"], {}) == "not-found"
 

@@ -1,4 +1,4 @@
-"""Porownanie import i from-import."""
+"""Porównanie import i from-import."""
 
 import math
 from math import sqrt

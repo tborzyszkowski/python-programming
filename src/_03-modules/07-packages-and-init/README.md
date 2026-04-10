@@ -10,7 +10,7 @@ Wyjaśnić, czym jest pakiet, jak go budować i jak zmieniło się znaczenie pli
 - **Pakiet**: katalog grupujący moduły.
 - **`__init__.py`**:
   - dawniej wymagany, aby katalog był pakietem,
-  - dziś opcjonalny dla namespace packages (PEP 420),
+  - dziś opcjonalny dla namespace packages (Python 3.3+, PEP 3147),
   - nadal przydatny do definiowania API pakietu.
 
 Diagram: `diagrams/package_layout.png`
@@ -82,7 +82,7 @@ Możliwe są pakiety bez `__init__.py`, ale:
 - wymagają dobrego zrozumienia systemu importu,
 - na początku kursu zwykle wygodniej stosować klasyczne pakiety z `__init__.py`.
 
-### Minimalny przykład (PEP 420)
+### Minimalny przykład namespace package
 
 Załóżmy, że ten sam pakiet logiczny `acme_tools` jest rozdzielony na dwa katalogi źródłowe.
 **Ważne:** w katalogu `acme_tools/` nie ma pliku `__init__.py`.
@@ -163,4 +163,4 @@ To mechanizm używany m.in. przy dużych projektach i wtyczkach, gdzie różne c
 ## Literatura
 
 - https://docs.python.org/3/tutorial/modules.html#packages
-- https://peps.python.org/pep-0420/
+- https://packaging.python.org/en/latest/guides/packaging-namespace-packages/

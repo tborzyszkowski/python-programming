@@ -1,4 +1,4 @@
-"""Krotki przeglad wybranych modulow biblioteki standardowej."""
+"""Krótki przegląd wybranych modułów biblioteki standardowej."""
 
 from collections import Counter
 from itertools import combinations

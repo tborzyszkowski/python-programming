@@ -95,5 +95,7 @@ Dobre minimum egzaminacyjne to umiejętność:
 - Python Docs - `importlib`: https://docs.python.org/3/library/importlib.html
 - Python Packaging User Guide: https://packaging.python.org/
 - PEP 328 (Absolute and Relative Imports): https://peps.python.org/pep-0328/
-- PEP 420 (Namespace Packages): https://peps.python.org/pep-0420/
+- PEP 3147 (PYC Repository Directories): https://peps.python.org/pep-3147/
 - PEP 451 (ModuleSpec): https://peps.python.org/pep-0451/
+- PEP 621 (Storing project metadata in pyproject.toml): https://peps.python.org/pep-0621/
+- Python Packaging — Namespace Packages: https://packaging.python.org/en/latest/guides/packaging-namespace-packages/

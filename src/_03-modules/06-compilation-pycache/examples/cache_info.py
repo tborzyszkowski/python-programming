@@ -1,4 +1,4 @@
-"""Narzedzia do inspekcji __pycache__."""
+"""Narzędzia do inspekcji __pycache__."""
 
 from __future__ import annotations
 

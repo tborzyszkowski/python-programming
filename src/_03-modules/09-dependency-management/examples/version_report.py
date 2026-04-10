@@ -1,4 +1,4 @@
-"""Raportuje wersje wybranych pakietow."""
+"""Raportuje wersje wybranych pakietów."""
 
 from __future__ import annotations
 

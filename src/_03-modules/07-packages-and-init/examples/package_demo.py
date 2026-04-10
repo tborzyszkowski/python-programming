@@ -1,4 +1,4 @@
-"""Uruchomienie przykladow pakietowych."""
+"""Uruchomienie przykładów pakietowych."""
 
 from basic_pkg import add, mean
 from school.core.grade_model import final_grade

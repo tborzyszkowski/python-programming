@@ -1,4 +1,4 @@
-"""Przyklady przestrzeni nazw i reguly LEGB."""
+"""Przykłady przestrzeni nazw i reguły LEGB."""
 
 VALUE = "global-value"
 

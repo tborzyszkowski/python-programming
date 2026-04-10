@@ -1,4 +1,4 @@
-"""Dynamiczne ladowanie modulu przez importlib."""
+"""Dynamiczne ładowanie modułu przez importlib."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Rozwiazania: namespaces."""
+"""Rozwiązania: przestrzenie nazw (namespaces)."""
 
 from collections.abc import Callable
 

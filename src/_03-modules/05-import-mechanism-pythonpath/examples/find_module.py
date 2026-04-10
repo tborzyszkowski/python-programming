@@ -1,4 +1,4 @@
-"""Wyszukiwanie informacji o modulem przez importlib."""
+"""Wyszukiwanie informacji o module przez importlib."""
 
 from __future__ import annotations
 

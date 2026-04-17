@@ -1,9 +1,78 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 08 - Dziedziczenie wielokrotne i MRO
-        class LoggerMixin
-class TimestampMixin
-class Event
-LoggerMixin <|-- Event
-TimestampMixin <|-- Event
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 08 – Dziedziczenie wielokrotne i algorytm MRO (C3)
+
+class Flyable {
+  + fly() : str
+  + altitude() : float
+}
+
+class Swimmable {
+  + swim() : str
+  + depth() : float
+}
+
+class Walkable {
+  + walk() : str
+  + speed() : float
+}
+
+class LoggerMixin {
+  - _log: list[str]
+  --
+  + log(msg: str) : None
+  + get_log() : list[str]
+}
+
+class TimestampMixin {
+  - _created_at: datetime
+  --
+  + created_at : datetime  <<property>>
+  + age_seconds() : float
+}
+
+class Duck {
+  - _name: str
+  --
+  + __init__(name: str)
+  + __str__() : str
+  + describe() : str
+}
+
+class AmphibiousVehicle {
+  - _fuel: float
+  --
+  + __init__(fuel: float)
+  + describe() : str
+}
+
+class LoggedEvent {
+  - _name: str
+  --
+  + __init__(name: str)
+  + __str__() : str
+}
+
+Flyable    <|-- Duck
+Swimmable  <|-- Duck
+Walkable   <|-- Duck
+Swimmable  <|-- AmphibiousVehicle
+Walkable   <|-- AmphibiousVehicle
+LoggerMixin    <|-- LoggedEvent
+TimestampMixin <|-- LoggedEvent
+
+note bottom of Duck
+  MRO Pythona (algorytm C3):
+  Duck → Flyable → Swimmable → Walkable → object
+  Python przeszukuje klasy od lewej do prawej,
+  unikając duplikatów.
+  ""Duck.__mro__""
+end note
+
+note right of LoggedEvent
+  Mixiny to klasy bez własnego stanu
+  dziedzinowego – dodają tylko zachowania.
+  Konwencja: sufiks ""Mixin"".
+end note
 @enduml

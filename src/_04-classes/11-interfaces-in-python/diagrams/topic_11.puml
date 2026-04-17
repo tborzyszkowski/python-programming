@@ -1,7 +1,60 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 11 - Interfejsy w Pythonie (`ABC` i `Protocol`)
-        interface PaymentProcessor
-class CardProcessor
-PaymentProcessor <|.. CardProcessor
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 11 – Interfejsy w Pythonie: ABC i Protocol
+
+' === ABC ===
+abstract class PaymentProcessor {
+  + {abstract} pay(amount: float) : str
+  + {abstract} refund(amount: float) : str
+  + receipt(amount: float) : str
+}
+
+class CardProcessor {
+  - _card_number: str
+  --
+  + __init__(card_number: str)
+  + pay(amount: float) : str
+  + refund(amount: float) : str
+}
+
+class BLIKProcessor {
+  - _phone: str
+  --
+  + __init__(phone: str)
+  + pay(amount: float) : str
+  + refund(amount: float) : str
+}
+
+class CashProcessor {
+  + pay(amount: float) : str
+  + refund(amount: float) : str
+}
+
+PaymentProcessor <|-- CardProcessor  : implements (ABC)
+PaymentProcessor <|-- BLIKProcessor  : implements (ABC)
+PaymentProcessor <|-- CashProcessor  : implements (ABC)
+
+' === Protocol ===
+interface "SupportsPay\n<<Protocol>>" as SupportsPay {
+  + pay(amount: float) : str
+}
+
+note right of SupportsPay
+  **Protocol** (PEP 544, Python 3.8+):
+  Sprawdzanie strukturalne (duck typing).
+  Klasa NIE musi dziedziczyć po Protocol –
+  wystarczy, że ma metodę ""pay"".
+  Używane ze statyczną analizą (mypy).
+end note
+
+CardProcessor  ..|> SupportsPay : strukturalnie
+BLIKProcessor  ..|> SupportsPay : strukturalnie
+
+note left of PaymentProcessor
+  **ABC** (Abstract Base Class):
+  • Wymaga jawnego dziedziczenia
+  • ""@abstractmethod"" wymusza implementację
+  • Próba instancji abstrakcyjnej → TypeError
+end note
 @enduml

@@ -1,10 +1,42 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 02 - Definicja klasy i tworzenie obiektu
-        class BankAccount {
-  +owner: str
-  +balance: float
-  +deposit(amount)
-  +withdraw(amount)
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 02 – Definicja klasy i tworzenie obiektu
+
+class BankAccount {
+  - _owner: str
+  - _balance: float
+  --
+  + __init__(owner: str, balance: float = 0.0)
+  + __str__() : str
+  + __repr__() : str
+  --
+  + deposit(amount: float) : None
+  + withdraw(amount: float) : None
+  + transfer(target: BankAccount, amount: float) : None
+  --
+  + owner : str  <<property>>
+  + balance : float  <<property>>
 }
+
+note right of BankAccount
+  Konstruktor **__init__** jest wywoływany
+  automatycznie przy tworzeniu obiektu:
+  ""acc = BankAccount("Jan", 100.0)""
+end note
+
+object "acc1 : BankAccount" as acc1 {
+  _owner   = "Jan"
+  _balance = 120.0
+}
+
+object "acc2 : BankAccount" as acc2 {
+  _owner   = "Anna"
+  _balance = 50.0
+}
+
+BankAccount <.. acc1 : <<instantiate>>
+BankAccount <.. acc2 : <<instantiate>>
+
+acc1 --> acc2 : transfer(30.0)
 @enduml

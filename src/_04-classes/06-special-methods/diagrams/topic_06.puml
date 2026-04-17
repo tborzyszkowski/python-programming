@@ -1,11 +1,65 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 06 - Metody specjalne (`dunder methods`)
-        class Vector2D {
-  +__new__(...)
-  +__init__(x, y)
-  +__len__()
-  +__str__()
-  +magnitude_hint: property
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 06 – Metody specjalne (dunder methods): Vector2D
+
+class Vector2D {
+  + x : float
+  + y : float
+  --
+  + __new__(cls, *args, **kwargs) : Vector2D
+  + __init__(x: float, y: float) : None
+  --
+  ' --- reprezentacja ---
+  + __str__() : str
+  + __repr__() : str
+  --
+  ' --- porównanie ---
+  + __eq__(other: object) : bool
+  + __hash__() : int
+  --
+  ' --- kolekcja ---
+  + __len__() : int
+  + __iter__() : Iterator
+  --
+  ' --- arytmetyka ---
+  + __add__(other: Vector2D) : Vector2D
+  + __sub__(other: Vector2D) : Vector2D
+  + __mul__(scalar: float) : Vector2D
+  + __rmul__(scalar: float) : Vector2D
+  + __neg__() : Vector2D
+  --
+  ' --- właściwości ---
+  + magnitude : float  <<property>>
+  + magnitude_hint : float  <<property>>
 }
+
+note top of Vector2D
+  Python wywołuje metody specjalne
+  automatycznie dla operatorów i funkcji:
+  • ""str(v)"" → ""v.__str__()""
+  • ""v1 + v2"" → ""v1.__add__(v2)""
+  • ""len(v)"" → ""v.__len__()""
+  • ""v1 == v2"" → ""v1.__eq__(v2)""
+end note
+
+object "v1 : Vector2D" as v1 {
+  x = 3.0
+  y = 4.0
+}
+
+object "v2 : Vector2D" as v2 {
+  x = 1.0
+  y = -1.0
+}
+
+object "v3 : Vector2D" as v3 {
+  x = 4.0
+  y = 3.0
+}
+
+v1 --> v3 : + v2 (__add__)
+Vector2D <.. v1
+Vector2D <.. v2
+Vector2D <.. v3
 @enduml

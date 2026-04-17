@@ -1,9 +1,70 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 09 - Polimorfizm: jedna operacja, wiele implementacji
-        abstract class Shape
-class Rectangle
-class Circle
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 09 – Polimorfizm: jedna operacja, wiele implementacji
+
+abstract class Shape {
+  + {abstract} area() : float
+  + {abstract} perimeter() : float
+  + describe() : str
+  + scale(factor: float) : Shape
+}
+
+class Rectangle {
+  - _w: float
+  - _h: float
+  --
+  + __init__(w: float, h: float)
+  + area() : float
+  + perimeter() : float
+  + __str__() : str
+}
+
+class Circle {
+  - _r: float
+  --
+  + __init__(r: float)
+  + area() : float
+  + perimeter() : float
+  + __str__() : str
+}
+
+class Triangle {
+  - _base: float
+  - _height: float
+  - _sides: tuple[float,float,float]
+  --
+  + __init__(base, height, a, b, c)
+  + area() : float
+  + perimeter() : float
+  + __str__() : str
+}
+
+class RegularPolygon {
+  - _n: int
+  - _side: float
+  --
+  + __init__(n: int, side: float)
+  + area() : float
+  + perimeter() : float
+}
+
 Shape <|-- Rectangle
 Shape <|-- Circle
+Shape <|-- Triangle
+Shape <|-- RegularPolygon
+
+note top of Shape
+  **Polimorfizm** – ta sama sygnatura,
+  różne implementacje.
+  Funkcja ""total_area(shapes)"" działa
+  dla **dowolnej** podklasy Shape,
+  bez instrukcji if/isinstance.
+end note
+
+note bottom of Rectangle
+  ""shapes = [Rectangle(3,4), Circle(2), Triangle(6,4,6,5,5)]""
+  ""for s in shapes:""
+  ""    print(s.describe())""   ← polimorfizm w akcji
+end note
 @enduml

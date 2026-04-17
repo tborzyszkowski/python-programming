@@ -1,9 +1,65 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 07 - Dziedziczenie w OOP i w Pythonie
-        class Vehicle
-class Bike
-class Car
-Vehicle <|-- Bike
-Vehicle <|-- Car
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 07 – Dziedziczenie: hierarchia pojazdów
+
+class Vehicle {
+  # _make: str
+  # _model: str
+  # _year: int
+  # _speed: float
+  --
+  + __init__(make: str, model: str, year: int)
+  + __str__() : str
+  --
+  + move() : str
+  + stop() : None
+  + accelerate(delta: float) : None
+  + info() : str
+}
+
+note top of Vehicle
+  Klasa bazowa – zawiera
+  wspólne atrybuty i zachowania.
+  Podklasy **dziedziczą** wszystko
+  i mogą **przesłaniać** (override).
+end note
+
+class Bike {
+  - _gear: int
+  --
+  + __init__(make: str, model: str, year: int)
+  + move() : str
+  + shift_gear(up: bool) : None
+}
+
+class Car {
+  - _fuel: float
+  - _fuel_capacity: float
+  --
+  + __init__(make: str, model: str, year: int, fuel: float)
+  + move() : str
+  + refuel(liters: float) : None
+  + fuel_level() : float
+}
+
+class ElectricCar {
+  - _battery: float
+  --
+  + __init__(make: str, model: str, year: int, battery: float)
+  + move() : str
+  + charge(kwh: float) : None
+  + battery_level() : float
+}
+
+Vehicle <|-- Bike  : extends
+Vehicle <|-- Car   : extends
+Car     <|-- ElectricCar : extends
+
+note right of ElectricCar
+  **super().__init__(...)** wywołuje
+  konstruktor klasy Car, który
+  z kolei wywołuje Vehicle.__init__.
+  MRO: ElectricCar → Car → Vehicle → object
+end note
 @enduml

@@ -1,10 +1,59 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 04 - Komponenty instancyjne i klasowe/statyczne
-        class Session {
-  {static} active_count
-  +user: str
-  {class} active_sessions()
-  {static} is_valid_username(name)
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 04 – Komponenty instancyjne vs klasowe / statyczne
+
+class Session {
+  ' ── atrybuty klasowe (wspólne) ──
+  {static} active_count : int = 0
+  {static} MAX_SESSIONS : int = 100
+  --
+  ' ── atrybuty instancyjne (unikalne) ──
+  - _user: str
+  - _session_id: str
+  --
+  + __init__(user: str)
+  + __repr__() : str
+  --
+  ' ── metody instancyjne ──
+  + logout() : None
+  + rename(new_name: str) : None
+  --
+  ' ── metody klasowe (fabryki) ──
+  {classifier} active_sessions() : int
+  {classifier} create_guest() : Session
+  --
+  ' ── metody statyczne (pomocnicze) ──
+  {static} is_valid_username(name: str) : bool
+  {static} generate_id() : str
 }
+
+note top of Session
+  **Atrybut klasowy** (""active_count""):
+  • jeden egzemplarz w pamięci
+  • dostępny przez klasę i przez instancję
+  • zmiana przez klasę → widoczna wszędzie
+
+  **Atrybut instancyjny** (""_user""):
+  • osobna kopia dla każdego obiektu
+  • tworzony w ""__init__""
+end note
+
+object "s1 : Session" as s1 {
+  _user       = "jan"
+  _session_id = "a1b2"
+}
+
+object "s2 : Session" as s2 {
+  _user       = "anna"
+  _session_id = "c3d4"
+}
+
+Session <.. s1
+Session <.. s2
+
+note right of s1
+  ""Session.active_count == 2""
+  (współdzielony przez s1 i s2)
+end note
 @enduml

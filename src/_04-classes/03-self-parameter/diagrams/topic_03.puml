@@ -1,9 +1,52 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 03 - Rola `self` w Pythonie
-        class Counter {
-  +value: int
-  +increment()
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 03 – Rola parametru `self` w Pythonie
+
+class Counter {
+  - _value: int
+  - _step: int
+  --
+  + __init__(start: int = 0, step: int = 1)
+  + __str__() : str
+  --
+  + increment() : None
+  + decrement() : None
+  + reset() : None
+  + value : int  <<property>>
 }
-note right: self => konkretna instancja
+
+note right of Counter
+  Każde wywołanie metody:
+  ""c.increment()""
+  jest równoważne:
+  ""Counter.increment(c)""
+  Python automatycznie przekazuje
+  instancję jako pierwszy argument **self**.
+end note
+
+object "c1 : Counter" as c1 {
+  _value = 3
+  _step  = 1
+}
+
+object "c2 : Counter" as c2 {
+  _value = 10
+  _step  = 5
+}
+
+Counter <.. c1 : <<instantiate>>
+Counter <.. c2 : <<instantiate>>
+
+note bottom of c1
+  ""c1.increment()""
+  → self = c1
+  → c1._value = 4
+end note
+
+note bottom of c2
+  ""c2.increment()""
+  → self = c2
+  → c2._value = 15
+end note
 @enduml

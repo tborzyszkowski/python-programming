@@ -1,11 +1,67 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 10 - Większy przykład: system ocen
-        abstract class GradePolicy
-class MeanPolicy
-class BestOfTwoPolicy
-class Course
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 10 – Większy przykład: System oceniania kursów
+
+abstract class GradePolicy {
+  + {abstract} final_score(points: list[float]) : float
+  + letter_grade(points: list[float]) : str
+}
+
+class MeanPolicy {
+  + final_score(points: list[float]) : float
+}
+
+class BestOfTwoPolicy {
+  + final_score(points: list[float]) : float
+}
+
+class WeightedPolicy {
+  - _weights: list[float]
+  --
+  + __init__(weights: list[float])
+  + final_score(points: list[float]) : float
+}
+
+class Course {
+  - _name: str
+  - _policy: GradePolicy
+  - _students: list[Student]
+  --
+  + __init__(name: str, policy: GradePolicy)
+  + __str__() : str
+  + add_student(student: Student) : None
+  + evaluate(points: list[float]) : float
+  + class_report() : str
+}
+
+class Student {
+  - _name: str
+  - _scores: dict[str, list[float]]
+  --
+  + __init__(name: str)
+  + __str__() : str
+  + add_scores(course: str, points: list[float]) : None
+  + average() : float
+}
+
 GradePolicy <|-- MeanPolicy
 GradePolicy <|-- BestOfTwoPolicy
-Course --> GradePolicy
+GradePolicy <|-- WeightedPolicy
+Course "1" o-- "1" GradePolicy : uses
+Course "1" o-- "*" Student     : contains
+
+note top of GradePolicy
+  **Strategia** (wzorzec projektowy):
+  Course nie zna szczegółów obliczania –
+  deleguje do GradePolicy.
+  Zmiana polityki oceniania bez modyfikacji Course.
+end note
+
+note right of WeightedPolicy
+  Przykład:
+  weights=[0.3, 0.3, 0.4]
+  scores=[60, 70, 80]
+  → 60*0.3 + 70*0.3 + 80*0.4 = 74.0
+end note
 @enduml

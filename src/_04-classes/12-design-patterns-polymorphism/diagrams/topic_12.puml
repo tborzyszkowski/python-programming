@@ -1,9 +1,79 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 12 - Wzorce projektowe oparte na polimorfizmie i dziedziczeniu
-        abstract class DiscountStrategy
-class StudentDiscount
-class NoDiscount
-DiscountStrategy <|-- StudentDiscount
-DiscountStrategy <|-- NoDiscount
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 12 – Wzorce projektowe: Strategy, Template Method, Factory Method
+
+' ════════════════════════════════
+'  STRATEGY
+' ════════════════════════════════
+package "Wzorzec Strategy" {
+  abstract class DiscountStrategy {
+    + {abstract} apply(price: float) : float
+    + description() : str
+  }
+  class StudentDiscount {
+    + apply(price: float) : float
+  }
+  class VipDiscount {
+    + apply(price: float) : float
+  }
+  class NoDiscount {
+    + apply(price: float) : float
+  }
+  class ShoppingCart {
+    - _items: list[float]
+    - _strategy: DiscountStrategy
+    --
+    + __init__(strategy: DiscountStrategy)
+    + add_item(price: float) : None
+    + total() : float
+  }
+  DiscountStrategy <|-- StudentDiscount
+  DiscountStrategy <|-- VipDiscount
+  DiscountStrategy <|-- NoDiscount
+  ShoppingCart o-- DiscountStrategy : uses
+}
+
+' ════════════════════════════════
+'  TEMPLATE METHOD
+' ════════════════════════════════
+package "Wzorzec Template Method" {
+  abstract class ReportTemplate {
+    + generate(name: str, score: float) : str
+    # _header(name: str) : str
+    + {abstract} _body(score: float) : str
+    # _footer() : str
+  }
+  class PassFailReport {
+    + _body(score: float) : str
+  }
+  class GradedReport {
+    + _body(score: float) : str
+  }
+  ReportTemplate <|-- PassFailReport
+  ReportTemplate <|-- GradedReport
+}
+
+' ════════════════════════════════
+'  FACTORY METHOD
+' ════════════════════════════════
+package "Wzorzec Factory Method" {
+  class DiscountFactory {
+    {static} + create(kind: str) : DiscountStrategy
+    {static} - _registry: dict
+  }
+  DiscountFactory ..> DiscountStrategy : <<creates>>
+}
+
+note bottom of ShoppingCart
+  **Strategy**: algorytm obliczania ceny
+  jest wymienny bez zmiany ShoppingCart.
+  Wstrzykiwanie zależności przez konstruktor.
+end note
+
+note right of ReportTemplate
+  **Template Method**: szkielet algorytmu
+  w klasie bazowej (""generate""),
+  szczegóły wypełniają podklasy (""_body"").
+end note
 @enduml

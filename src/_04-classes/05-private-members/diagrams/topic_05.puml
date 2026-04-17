@@ -1,9 +1,75 @@
-        @startuml
-        skinparam classAttributeIconSize 0
-        title 05 - Komponenty prywatne w Pythonie
-        class TemperatureSensor {
-  -_celsius: float
-  -__calibration_offset: float
-  +read()
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+title 05 – Komponenty prywatne: Point i Segment
+
+class Point {
+  - __x : float
+  - __y : float
+  --
+  + __init__(x_coordinate: float = 0, y_coordinate: float = 0)
+  + __str__() : str
+  + __repr__() : str
+  + __eq__(other: Point) : bool
+  --
+  + x : float  <<property get/set>>
+  + y : float  <<property get/set>>
+  --
+  + distance(point: Point) : float
+  + translate(dx: float, dy: float) : Point
+  + scale(factor: float) : Point
 }
+
+note right of Point
+  Atrybuty ""__x"" i ""__y"" są
+  **name-mangled** przez Python do
+  ""_Point__x"" i ""_Point__y"".
+  Setter wymusza nieujemność:
+  ""self.__x = x if x >= 0 else -x""
+end note
+
+class Segment {
+  - __first_point  : Point
+  - __second_point : Point
+  --
+  + __init__(first: Point, second: Point)
+  + __str__() : str
+  + __repr__() : str
+  --
+  + first_point  : Point  <<property get/set>>
+  + second_point : Point  <<property get/set>>
+  --
+  + length() : float
+  + midpoint() : Point
+  + is_horizontal() : bool
+  + is_vertical() : bool
+}
+
+Segment "1" *-- "2" Point : zawiera
+
+note bottom of Segment
+  ""s = Segment(Point(0,0), Point(3,4))""
+  ""s.length()  # → 5.0""
+  ""s.midpoint()  # → Point(1.5, 2.0)""
+end note
+
+class TemperatureSensor {
+  - _celsius: float
+  - __calibration_offset: float
+  --
+  + __init__(celsius: float)
+  + read() : float
+  + calibrate(offset: float) : None
+  + celsius : float  <<property>>
+}
+
+note right of TemperatureSensor
+  **Jedno podkreślenie** (""_celsius""):
+  konwencja „chroniony" – nie dla klientów,
+  ale technicznie dostępny.
+
+  **Dwa podkreślenia** (""__calibration_offset""):
+  name-mangling – trudno przypadkowo nadpisać
+  w podklasie.
+end note
 @enduml

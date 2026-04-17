@@ -1,14 +1,40 @@
 @startuml
 skinparam classAttributeIconSize 0
-title 01 - Klasa a obiekt: intuicja i historia
+skinparam backgroundColor #FAFAFA
+title 01 – Klasa a obiekt: szablon i instancja
 
 class Student {
-  +name: str
-  +year: int
+  + name: str
+  + year: int
+  + gpa: float
+  --
+  + enroll(course: str) : None
+  + get_status() : str
 }
 
-note right of Student
-Klasa opisuje typ.
-Obiekt to konkretna instancja.
+note top of Student
+  **Klasa** = szablon opisujący
+  atrybuty i zachowanie.
+  Istnieje tylko jeden szablon.
 end note
+
+object "alice : Student" as alice {
+  name = "Alice"
+  year = 2
+  gpa  = 4.5
+}
+
+object "bob : Student" as bob {
+  name = "Bob"
+  year = 3
+  gpa  = 3.8
+}
+
+note bottom of alice
+  **Obiekt** = konkretna instancja klasy.
+  Każdy obiekt ma własne wartości atrybutów.
+end note
+
+Student <.. alice : <<instantiate>>
+Student <.. bob   : <<instantiate>>
 @enduml

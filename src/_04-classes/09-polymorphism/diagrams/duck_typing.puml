@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "DejaVu Sans"
+title Duck Typing w Pythonie
+
+package "Klasyczny duck typing" {
+  class Duck {
+    + quack() : str
+    + walk() : str
+  }
+  class Person {
+    + quack() : str
+    + walk() : str
+  }
+  class RubberDuck {
+    + quack() : str
+  }
+  note bottom of Duck
+    Brak wspólnej klasy bazowej.
+    Wystarczy implementować
+    metodę **quack()**.
+  end note
+}
+
+package "Typing Protocol (Python 3.8+)" {
+  interface Drawable <<Protocol>> {
+    + draw() : str
+  }
+  class SVGCircle {
+    + draw() : str
+  }
+  class TerminalBox {
+    + draw() : str
+  }
+  Drawable <|.. SVGCircle : implements
+  Drawable <|.. TerminalBox : implements
+}
+
+package "Strategy przez duck typing" {
+  class BubbleSorter {
+    + sort(data: list) : list
+  }
+  class QuickSorter {
+    + sort(data: list) : list
+  }
+  class PythonBuiltinSorter {
+    + sort(data: list) : list
+  }
+  note right of BubbleSorter
+    process_data(sorter, data)
+    wywołuje sorter.sort(data)
+    bez sprawdzania typu
+  end note
+}
+
+note as N1
+  **Duck typing** – Python sprawdza
+  czy obiekt MA metodę,
+  a nie czy JEST określonego typu.
+  "Jeśli kwacze jak kaczka,
+   to jest kaczką."
+end note
+
+@enduml
+

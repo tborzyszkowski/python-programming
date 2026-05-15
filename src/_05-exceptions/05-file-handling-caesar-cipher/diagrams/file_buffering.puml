@@ -1,0 +1,78 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #444444
+
+title Buforowana natura zapisu do pliku
+
+participant "Program\nPythona" as Prog #LightBlue
+box "Przestrzeń użytkownika (user space)"
+  participant "Bufor biblioteki\nstandardowej\n(io.BufferedWriter)" as LibBuf #LightYellow
+end box
+box "Jądro systemu operacyjnego (kernel space)"
+  participant "Bufor strony\n(Page Cache / OS Buffer)" as OSBuf #LightGreen
+  participant "Sterownik\nblokowy" as Driver #LightCoral
+end box
+participant "Dysk twardy\n(HDD / SSD)" as Disk #LightGray
+
+Prog -> LibBuf : f.write("dane")
+note right of LibBuf
+  Dane trafiają najpierw
+  do bufora w pamięci procesu.
+  Bufor ma zazwyczaj 8 KB.
+end note
+
+LibBuf --> Prog : (natychmiastowy powrót)
+
+LibBuf -> OSBuf : flush() / bufor pełny\n(systemowe write())
+note right of OSBuf
+  Jądro trzyma dane
+  w Page Cache.
+  Dostęp bardzo szybki
+  (RAM).
+end note
+
+OSBuf --> LibBuf : (natychmiastowy powrót)
+
+OSBuf -> Driver : pdflush / sync\n(co kilka sekund lub na żądanie)
+note right of Driver
+  Sterownik szereguje
+  operacje I/O i wysyła
+  dane do urządzenia.
+end note
+
+Driver -> Disk : zapis sektorów
+
+Disk --> Driver : potwierdzenie
+Driver --> OSBuf : (gotowe)
+OSBuf --> LibBuf : (gotowe)
+
+== Sytuacje wymuszające natychmiastowy zapis ==
+
+Prog -> LibBuf : f.flush()
+LibBuf -> OSBuf : write() – opróżnienie bufora biblioteki
+note right of LibBuf: Dane opuszczają\nbufor biblioteki,\nale mogą być\njeszce w Page Cache.
+
+Prog -> OSBuf : os.fsync(f.fileno())
+OSBuf -> Driver : zapis wymuszony\n(O_SYNC / fsync)
+Driver -> Disk : zapis sektorów
+note right of OSBuf
+  fsync() gwarantuje,
+  że dane dotarły
+  na dysk fizyczny.
+end note
+
+== Zamknięcie pliku ==
+
+Prog -> LibBuf : f.close() / wyjście z "with"
+LibBuf -> OSBuf : flush() + close()
+note over Prog, Disk
+  Zamknięcie pliku opróżnia bufor biblioteki,
+  ale NIE gwarantuje zapisu na dysk fizyczny
+  (Page Cache może jeszcze trzymać dane).
+  Utrata zasilania przed sync = utrata danych!
+end note
+
+@enduml
+

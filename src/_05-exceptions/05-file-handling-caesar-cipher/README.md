@@ -9,10 +9,10 @@ Opanować pracę z plikami tekstowymi i binarnymi oraz zbudować kompletny przyk
 ### Dlaczego pliki trzeba otwierać i zamykać?
 
 Plik to zasób systemu operacyjnego. Kiedy otwieramy plik, system przydziela:
-- deskryptor pliku 
-  (ograniczony zasób: typowo 1024 jednocześnie otwartych plików na proces - zależy od ustawień systemu operacyjnego),
-- bufor danych w pamięci,
-- blokadę (zależnie od systemu i trybu dostępu).
+- **deskryptor pliku** (ograniczony zasób: typowo 1024 jednocześnie otwartych plików na proces — zależy od ustawień
+  systemu operacyjnego),
+- **bufor danych w pamięci** (bufor biblioteki standardowej i bufor strony jądra),
+- **blokadę** (zależnie od systemu i trybu dostępu).
 
 Niezamknięty plik może prowadzić do:
 - utraty danych (dane w buforze nie zostają zapisane na dysk),
@@ -26,6 +26,205 @@ Menedżer kontekstu `with` gwarantuje zamknięcie pliku nawet przy wyjątku:
 with open("dane.txt", "r", encoding="utf-8") as f:
     content = f.read()
 # Tu plik jest już zamknięty — nawet jeśli read() rzucił wyjątek
+```
+
+---
+
+### Buforowana natura zapisu do pliku
+
+Zapis do pliku **nie oznacza natychmiastowego wylądowania danych na dysku**. Python
+i system operacyjny stosują kilka warstw buforowania, by zmniejszyć liczbę kosztownych
+operacji I/O.
+
+#### Warstwy buforowania
+
+```
+Program Python
+    │  f.write("dane")
+    ▼
+Bufor biblioteki standardowej (io.BufferedWriter)
+    │  flush() lub bufor pełny (~8 KB)
+    ▼
+Bufor strony jądra (Page Cache)
+    │  pdflush / sync (co kilka sekund lub na żądanie)
+    ▼
+Sterownik blokowy
+    │  zapis sektorów
+    ▼
+Dysk (HDD / SSD)
+```
+
+**Konsekwencje:**
+- `f.write()` zwraca natychmiast — dane mogą być tylko w pamięci RAM.
+- `f.flush()` opróżnia bufor biblioteki → dane trafiają do Page Cache jądra.
+- `os.fsync(f.fileno())` wymusza zapis Page Cache na dysk fizyczny.
+- `f.close()` (lub wyjście z bloku `with`) wywołuje `flush()`, ale **nie** `fsync()`.
+- Utrata zasilania przed `fsync()` może → utrata danych.
+
+```python
+import os
+
+with open("ważne.txt", "w", encoding="utf-8") as f:
+    f.write("dane krytyczne")
+    f.flush()            # opróżnia bufor biblioteki
+    os.fsync(f.fileno()) # gwarantuje zapis na dysk
+```
+
+#### Kiedy buforowanie jest problematyczne?
+
+| Sytuacja | Ryzyko | Rozwiązanie |
+|---|---|---|
+| Awaria zasilania po `write()` bez `fsync()` | Utrata danych | `os.fsync()` lub `open(..., mode="wb", buffering=0)` |
+| Dwa procesy czytają ten sam plik | Nieaktualne dane w Page Cache | `os.fsync()` + advisory locks |
+| Logi aplikacji nie pojawiają się w czasie rzeczywistym | Dane tkwią w buforze | `f.flush()` po każdym wierszu lub `buffering=1` (line-buffered) |
+
+#### Sterowanie buforowaniem w Pythonie
+
+```python
+# Bez buforowania (tylko dla trybów binarnych):
+f = open("surowe.bin", "wb", buffering=0)
+
+# Buforowanie liniowe (tryb tekstowy, stdout):
+f = open("logi.txt", "w", buffering=1, encoding="utf-8")
+
+# Domyślne buforowanie blokowe (~8 KB):
+f = open("dane.txt", "w", encoding="utf-8")  # buffering=-1
+```
+
+Diagram: `diagrams/file_buffering.png`
+
+![Buforowana natura zapisu do pliku](diagrams/file_buffering.png)
+
+---
+
+### Tablica plików w systemie operacyjnym — deskryptory i ich limit
+
+#### Czym jest deskryptor pliku?
+
+Gdy wywołujesz `open()`, system operacyjny zwraca **deskryptor pliku** (ang. *file
+descriptor*, w skrócie fd) — małą, nieujemną liczbę całkowitą, która jest indeksem
+w wewnętrznej **tablicy deskryptorów pliku** procesu.
+
+Każdy nowo uruchomiony proces w systemie UNIX/Linux otrzymuje automatycznie trzy
+standardowe deskryptory:
+
+| fd | Nazwa | Opis |
+|---|---|---|
+| 0 | `stdin`  | standardowe wejście |
+| 1 | `stdout` | standardowe wyjście |
+| 2 | `stderr` | standardowe wyjście błędów |
+
+Każde następne `open()` przydziela kolejny fd (3, 4, …).
+
+#### Trójpoziomowy model tablic (UNIX)
+
+System operacyjny używa trzech poziomów struktur danych:
+
+1. **Tablica deskryptorów pliku procesu** (*File Descriptor Table*) — prywatna dla
+   każdego procesu; mapuje fd → wpis w globalnej tablicy otwartych plików.
+2. **Globalna tablica otwartych plików** (*Open File Table*) — współdzielona przez
+   wszystkie procesy; przechowuje bieżącą pozycję (offset), tryb dostępu i licznik
+   referencji.
+3. **Tablica i-węzłów** (*inode Table / V-node Table*) — zawiera metadane pliku
+   (rozmiar, uprawnienia, wskaźniki do bloków danych na dysku).
+
+```
+Proces A                        Jądro OS
+┌────────────────┐   ┌─────────────────────────────────┐
+│ fd 0 → stdin   │──▶│ wpis 0: offset=0, tryb=r, →inode│──▶ inode terminala
+│ fd 1 → stdout  │──▶│ wpis 1: offset=0, tryb=w, →inode│──▶ inode terminala
+│ fd 2 → stderr  │──▶│ wpis 2: offset=0, tryb=w, →inode│──▶ inode terminala
+│ fd 3 → plik A  │──▶│ wpis 3: offset=42, tryb=r,→inode│──▶ inode pliku A ──▶ dysk
+│ fd 4 → plik B  │──▶│ wpis 4: offset=0, tryb=w, →inode│──▶ inode pliku B ──▶ dysk
+└────────────────┘   └─────────────────────────────────┘
+```
+
+Diagram: `diagrams/file_descriptor_table.png`
+
+![Tablica plików w systemie operacyjnym](diagrams/file_descriptor_table.png)
+
+#### Limit jednocześnie otwartych plików
+
+| System | Limit domyślny (miękki) | Limit maksymalny (twardy) | Zmiana |
+|---|---|---|---|
+| Linux | 1024 fd / proces | 4096 (lub więcej) | `ulimit -n 4096` |
+| macOS | 256 fd / proces | ~10 000 | `ulimit -n 10000` |
+| Windows (msvcrt) | ~512 fd | ~2 048 | ustawienie kompilatora C |
+
+W Pythonie możesz sprawdzić i zmienić limit:
+
+```python
+import resource  # tylko UNIX/Linux/macOS
+
+soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
+print(f"Limit miękki: {soft}, twardy: {hard}")
+
+# Zwiększenie limitu miękkiego (do wartości twardego):
+resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
+```
+
+Na Windows:
+
+```python
+import msvcrt
+# Windows nie eksponuje getrlimit; limit CRT można zmienić przez:
+import ctypes
+ctypes.cdll.msvcrt._setmaxstdio(2048)
+```
+
+#### Dlaczego limit ma znaczenie w praktyce?
+
+```python
+# BŁĄD: otwarcie zbyt wielu plików bez zamykania
+handles = []
+for i in range(2000):           # przekroczymy limit ~1024
+    handles.append(open(f"plik_{i}.txt", "w"))
+# OSError: [Errno 24] Too many open files
+```
+
+```python
+# POPRAWNIE: menedżer kontekstu automatycznie zamyka plik po każdej iteracji
+import pathlib
+
+for i in range(2000):
+    with pathlib.Path(f"plik_{i}.txt").open("w") as f:
+        f.write(f"wiersz {i}\n")
+```
+
+#### Sprawdzenie liczby otwartych deskryptorów w czasie działania programu
+
+```python
+import os
+import pathlib
+
+# Na Linux/macOS:
+def count_open_fds() -> int:
+    """Zwraca liczbę aktywnych deskryptorów pliku bieżącego procesu."""
+    fd_dir = pathlib.Path("/proc/self/fd")
+    if fd_dir.exists():
+        return sum(1 for _ in fd_dir.iterdir())
+    # macOS / BSD: lsof -p $$
+    return -1
+
+print(f"Otwarte deskryptory: {count_open_fds()}")
+```
+
+#### Podsumowanie — zasady dobrej praktyki
+
+1. **Zawsze używaj `with open(...) as f:`** — automatycznie zamyka plik i zwalnia
+   deskryptor, nawet przy wyjątku.
+2. **Używaj `f.flush()` + `os.fsync()`** gdy zapis musi być trwały (bazy danych,
+   pliki konfiguracyjne, logi krytyczne).
+3. **Nie trzymaj otwartych plików dłużej niż potrzeba** — wyczerpanie deskryptorów
+   to trudny do debugowania błąd w czasie produkcji.
+4. **Monitoruj liczbę otwartych plików** w aplikacjach serwerowych (np. przez
+   `psutil.Process().open_files()`).
+
+```python
+import psutil, os
+
+proc = psutil.Process(os.getpid())
+print(f"Otwarte pliki: {len(proc.open_files())}")
 ```
 
 ### Tryby otwarcia pliku
@@ -79,9 +278,7 @@ raw = Path("obraz.bin").read_bytes()
 print(raw[:4])   # b'\x89PNG'
 ```
 
-Diagram: `diagrams/topic_05.png`
-
-![Obsługa plików i szyfrowanie](diagrams/topic_05.png)
+---
 
 ## Szyfr Cezara
 
@@ -177,4 +374,9 @@ Zadanie: napisz funkcję `caesar_transform(text: str, shift: int) -> str`, któr
 - https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files
 - https://docs.python.org/3/library/pathlib.html
 - https://docs.python.org/3/library/functions.html#open
+- https://docs.python.org/3/library/os.html#os.fsync
+- https://docs.python.org/3/library/resource.html
+- W. Richard Stevens, Stephen A. Rago, *Advanced Programming in the UNIX Environment*, 3rd ed., rozdz. 3 „File I/O" — klasyczny opis deskryptorów i tablicy plików
 - M. Lutz, *Learning Python*, rozdz. „File and Directory Tools"
+- https://www.kernel.org/doc/html/latest/filesystems/vfs.html — opis warstwy VFS jądra Linux (i-węzły, Page Cache)
+- https://psutil.readthedocs.io/en/latest/#psutil.Process.open_files — monitorowanie otwartych plików przez psutil

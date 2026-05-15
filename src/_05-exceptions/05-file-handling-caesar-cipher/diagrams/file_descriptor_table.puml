@@ -1,0 +1,83 @@
+@startuml
+skinparam monochrome false
+skinparam defaultFontName "DejaVu Sans"
+skinparam backgroundColor #FAFAFA
+skinparam ArrowColor #444444
+skinparam linetype ortho
+
+title Tablica plików w systemie operacyjnym (uproszczony model UNIX/Linux)
+
+rectangle "Przestrzeń procesu (user space)" #LightBlue {
+  rectangle "Tablica deskryptorów pliku\n(File Descriptor Table)\nper proces" as FDT {
+    artifact "fd 0 → stdin"    as FD0
+    artifact "fd 1 → stdout"   as FD1
+    artifact "fd 2 → stderr"   as FD2
+    artifact "fd 3 → plik A"   as FD3
+    artifact "fd 4 → plik B"   as FD4
+    artifact "fd 5 → gniazdo"  as FD5
+    artifact "...  (limit: np. 1024)" as FDN
+  }
+}
+
+rectangle "Przestrzeń jądra (kernel space)" #LightGreen {
+  rectangle "Globalna tablica otwartych plików\n(Open File Table)" as OFT {
+    artifact "wpis 0:\noffset, tryb, refcount, →inode" as OFT0
+    artifact "wpis 1:\noffset, tryb, refcount, →inode" as OFT1
+    artifact "wpis 2:\noffset, tryb, refcount, →inode" as OFT2
+  }
+
+  rectangle "Tablica i-węzłów (inode table)\n(V-node Table)" as INODE {
+    artifact "inode A:\nrozmiar, uprawnienia,\nbloki danych na dysku" as IN_A
+    artifact "inode B:\nrozmiar, uprawnienia,\nbloki danych na dysku" as IN_B
+    artifact "inode stdin:\n(potok / terminal)" as IN_S
+  }
+}
+
+rectangle "Urządzenia / system plików" #LightCoral {
+  database "Dysk\n(HDD/SSD)\nbloki danych" as DISK
+  artifact "Terminal\n(stdin/stdout/stderr)" as TERM
+}
+
+FD0 --> OFT0 : wskaźnik
+FD1 --> OFT0
+FD2 --> OFT0
+FD3 --> OFT1 : wskaźnik
+FD4 --> OFT2 : wskaźnik
+FD5 --> OFT2
+
+OFT1 --> IN_A : →inode
+OFT2 --> IN_B : →inode
+OFT0 --> IN_S : →inode
+
+IN_A --> DISK : bloki danych
+IN_B --> DISK : bloki danych
+IN_S --> TERM
+
+note bottom of FDT
+  <b>Limit deskryptorów na proces</b>
+  Linux (domyślnie): 1024 (miękki) / 4096 (twardy)
+  Sprawdzenie: ulimit -n
+  Python: import resource; resource.getrlimit(resource.RLIMIT_NOFILE)
+  Windows: ~512 (msvcrt) lub ~2048 (ucrt)
+end note
+
+note bottom of OFT
+  Każdy wpis zawiera:
+  • aktualną pozycję (offset) w pliku
+  • tryb dostępu (r / w / rw)
+  • licznik referencji (refcount)
+  • wskaźnik do i-węzła
+end note
+
+note bottom of INODE
+  i-węzeł (inode) zawiera metadane:
+  • rozmiar pliku
+  • uprawnienia (chmod)
+  • znaczniki czasu (atime, mtime, ctime)
+  • adresy bloków danych na dysku
+  Dwa fds mogą wskazywać na ten sam inode
+  (np. po dup() lub fork())
+end note
+
+@enduml
+

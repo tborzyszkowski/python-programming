@@ -9,7 +9,8 @@ Opanować pracę z plikami tekstowymi i binarnymi oraz zbudować kompletny przyk
 ### Dlaczego pliki trzeba otwierać i zamykać?
 
 Plik to zasób systemu operacyjnego. Kiedy otwieramy plik, system przydziela:
-- deskryptor pliku (ograniczony zasób: typowo 1024 na proces),
+- deskryptor pliku 
+  (ograniczony zasób: typowo 1024 jednocześnie otwartych plików na proces - zależy od ustawień systemu operacyjnego),
 - bufor danych w pamięci,
 - blokadę (zależnie od systemu i trybu dostępu).
 

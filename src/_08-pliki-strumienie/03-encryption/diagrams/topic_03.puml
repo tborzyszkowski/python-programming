@@ -1,0 +1,37 @@
+@startuml topic_03
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Szyfrowanie plików w Pythonie — mapa koncepcji
+
+rectangle "Szyfrowanie symetryczne" #EEF6FF {
+    card xor    as "XOR\n(edukacyjny)"
+    card fernet as "Fernet / AES-128-CBC\n(cryptography)"
+    card aes256 as "AES-256-GCM\n(hazmat API)"
+}
+
+rectangle "Zarządzanie kluczem" #FFF8EE {
+    card gen    as "Fernet.generate_key()\nlosowy klucz"
+    card pbkdf2 as "PBKDF2HMAC\nklucz z hasła + sól"
+}
+
+rectangle "Integralność danych" #E4F5E4 {
+    card sha256 as "hashlib.sha256()\nSHA-256 pliku"
+    card hmac_  as "hmac.new()\nHMAC (klucz + dane)"
+}
+
+rectangle "Zastosowania" #FFE4E4 {
+    card vault  as "Sejf plików\n(FileVault)"
+    card backup as "Zaszyfrowany backup"
+    card verify as "Weryfikacja pobranych\nplików"
+}
+
+xor    --> vault
+fernet --> vault
+fernet --> backup
+sha256 --> verify
+pbkdf2 --> fernet
+gen    --> fernet
+hmac_  --> fernet : wewnętrznie
+@enduml
+

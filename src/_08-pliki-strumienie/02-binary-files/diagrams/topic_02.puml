@@ -1,0 +1,34 @@
+@startuml topic_02
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Pliki binarne w Pythonie — mapa koncepcji
+
+rectangle "Typy danych" #EEF6FF {
+    card bytes    as "bytes\n(niemutowalny)"
+    card bytearray as "bytearray\n(mutowalny)"
+    card memoryview as "memoryview\n(widok bez kopii)"
+}
+
+rectangle "Operacje I/O" #E4F5E4 {
+    card open_rb as "open('rb'/'wb')"
+    card struct_  as "struct.pack/unpack\nformat binarny"
+    card mmap_    as "mmap\nwydajny dostęp"
+}
+
+rectangle "Zastosowania" #FFF8EE {
+    card formaty  as "Własne formaty\n(naglówek + rekordy)"
+    card analiza  as "Analiza plików\n(PNG, WAV, BMP...)"
+    card ipc      as "IPC / shared memory"
+}
+
+bytes      --> open_rb  : zapis/odczyt
+bytearray  --> struct_  : bufor wynikowy
+struct_    --> formaty
+open_rb    --> analiza
+mmap_      --> analiza
+mmap_      --> ipc
+bytes      --> memoryview
+bytearray  --> memoryview
+@enduml
+

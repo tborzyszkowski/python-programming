@@ -1,0 +1,42 @@
+@startuml topic_01
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "DejaVu Sans"
+
+title Tryby otwarcia pliku i przepływ danych
+
+rectangle "Program Python" #EEF6FF {
+    agent write  as "f.write()"
+    agent read   as "f.read() / for linia in f"
+    agent append as "f.write()  [tryb 'a']"
+}
+
+storage "Plik na dysku" as DISK #LightYellow
+
+rectangle "Tryby open()" #FFF8EE {
+    card r   as "'r'  odczyt"
+    card w   as "'w'  zapis (czyści)"
+    card a   as "'a'  dołączanie"
+    card x   as "'x'  tworzenie (błąd gdy istnieje)"
+    card rp  as "'r+' odczyt+zapis"
+}
+
+read   --> r
+read   --> rp
+write  --> w
+write  --> rp
+append --> a
+
+r  --> DISK : czyta
+rp --> DISK : czyta i pisze
+w  --> DISK : nadpisuje
+a  --> DISK : dołącza na koniec
+x  --> DISK : tworzy nowy
+
+note right of DISK
+  Plik tekstowy: linie zakończone '\n'
+  Kodowanie podaj jawnie: encoding="utf-8"
+  Menedżer kontekstu 'with' gwarantuje close()
+end note
+@enduml
+

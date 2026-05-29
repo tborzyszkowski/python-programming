@@ -1,0 +1,42 @@
+@startuml topic_05
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Filtrowanie strumieni w Pythonie — mapa koncepcji
+
+rectangle "Wzorce generatorów" #EEF6FF {
+    card gen    as "Generator\n(yield)"
+    card genexp as "Generator expression\n(x for x in ...)"
+    card yieldfrom as "yield from\ndelega cja"
+}
+
+rectangle "Filtry / transformacje" #E4F5E4 {
+    card where_  as "where(predykat)\nfiltrowanie"
+    card select_ as "select(func)\ntransformacja"
+    card take_   as "take(n)\nograniczenie"
+    card chunk_  as "porcjuj(n)\ngrupowanie"
+}
+
+rectangle "Narzędzia stdlib" #FFF8EE {
+    card islice_ as "itertools.islice\nograniczenie strumienia"
+    card chain_  as "itertools.chain\nłączenie strumieni"
+    card gzip_   as "gzip.open()\nkompresja strumieniowa"
+}
+
+rectangle "Zastosowania" #FFE4B5 {
+    card logs_  as "Analiza logów\nbez RAM overflow"
+    card etl_   as "ETL: Extract\nTransform Load"
+    card search_ as "Wyszukiwanie binarne\nna granicy buforów"
+}
+
+gen --> where_
+gen --> select_
+genexp --> where_
+where_ --> logs_
+where_ --> etl_
+chunk_ --> etl_
+islice_ --> take_
+chain_  --> search_
+gzip_  --> logs_
+@enduml
+

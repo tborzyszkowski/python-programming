@@ -1,0 +1,36 @@
+@startuml topic_04
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Strumienie io w Pythonie — mapa koncepcji
+
+rectangle "Strumienie tekstowe" #EEF6FF {
+    card sio   as "StringIO\noperacje in-memory\nna str"
+    card tiow  as "TextIOWrapper\nkodowanie/dekodowanie\nstrumienia binarnego"
+}
+
+rectangle "Strumienie binarne" #E4F5E4 {
+    card bio   as "BytesIO\noperacje in-memory\nna bytes"
+    card bur   as "BufferedReader/Writer\nbuforowanie\ndla RawIOBase"
+}
+
+rectangle "Zastosowania" #FFF8EE {
+    card csv_  as "Parsowanie CSV\nbez pliku"
+    card zip_  as "ZIP w pamięci"
+    card test_ as "Testy: mock\npliku/stdout"
+    card http_ as "HTTP: odpowiedź\njako strumień"
+}
+
+rectangle "Protokół (duck typing)" #FFE4B5 {
+    card prot as "read() write()\nseek() tell()\nflush() close()"
+}
+
+sio  --> csv_
+sio  --> test_
+bio  --> zip_
+bio  --> http_
+tiow --> sio   : owija BytesIO
+prot --> sio   : implementuje
+prot --> bio   : implementuje
+@enduml
+

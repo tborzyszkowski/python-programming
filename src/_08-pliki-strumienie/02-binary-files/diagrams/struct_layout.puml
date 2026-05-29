@@ -1,0 +1,28 @@
+@startuml struct_layout
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title struct.pack("<IHf", 42, 7, 3.14) - uklad bajtow (little-endian)
+
+rectangle "Bufor 10 bajtow (hex)" #FAFAFA {
+    card field_i as "[ 2A 00 00 00 ]\nuint32 (I), 4 bajty\nwartosc = 42" #LightBlue
+    card field_h as "[ 07 00 ]\nuint16 (H), 2 bajty\nwartosc = 7" #LightGreen
+    card field_f as "[ C3 F5 48 40 ]\nfloat32 (f), 4 bajty\nwartosc = 3.14" #LightYellow
+}
+
+field_i -[hidden]right-> field_h
+field_h -[hidden]right-> field_f
+
+note bottom of field_i
+  Little-endian:
+  bajt najmniej znaczacy
+  na poczatku adresu.
+  2A 00 00 00 = 0x0000002A = 42
+end note
+
+note bottom of field_f
+  struct.calcsize("<IHf") == 10
+  Laczny rozmiar bufora: 10 bajtow
+end note
+@enduml
+

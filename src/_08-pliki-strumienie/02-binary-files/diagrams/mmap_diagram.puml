@@ -1,0 +1,43 @@
+@startuml mmap_diagram
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title mmap — mapowanie pliku w pamięci
+
+rectangle "Przestrzeń adresowa procesu" #EEF6FF {
+    rectangle "Segment kodu" as CODE
+    rectangle "Sterta (heap)" as HEAP
+    rectangle "Mapowany region\n(mmap)" as MMAP #LightGreen {
+        note as N1
+          mm[0:5] → bajty 0–4 pliku
+          mm[100] = 42 → modyfikacja
+          Brak jawnego read()/write()
+        end note
+    }
+    rectangle "Stos (stack)" as STACK
+}
+
+rectangle "System operacyjny (jądro)" #FFE4B5 {
+    rectangle "Page Cache" as PC {
+        note as N2
+          Strony pliku buforowane
+          w pamięci fizycznej
+        end note
+    }
+    rectangle "VFS / sterownik systemu plików" as VFS
+}
+
+storage "Dysk (plik)" as DISK #LightYellow
+
+MMAP <--> PC   : page fault → załaduj stronę\nmodyfikacja → dirty page
+PC   <--> VFS  : odczyt/zapis stron
+VFS  <--> DISK : bloki danych
+
+note right of MMAP
+  mmap.mmap(f.fileno(), 0)
+  0 = mapuj cały plik
+  Tryb: ACCESS_READ lub ACCESS_WRITE
+  Zamknięcie: mm.close()
+end note
+@enduml
+

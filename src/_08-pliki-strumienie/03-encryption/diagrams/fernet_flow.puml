@@ -1,0 +1,58 @@
+@startuml fernet_flow
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "DejaVu Sans"
+
+title Fernet — przepływ szyfrowania i weryfikacji
+
+actor Użytkownik as U
+
+rectangle "Wyprowadzanie klucza (opcjonalne)" #FFF8EE {
+    card haslo  as "Hasło (str)"
+    card sol    as "Sól (16 B losowych)"
+    card pbkdf2 as "PBKDF2HMAC\n(SHA-256, 480 000 iter.)"
+    card klucz  as "Klucz Fernet\n(32 B = AES-128 + HMAC-256)"
+    haslo --> pbkdf2
+    sol   --> pbkdf2
+    pbkdf2 --> klucz
+}
+
+rectangle "Szyfrowanie Fernet" #EEF6FF {
+    card dane    as "Plaintext (bytes)"
+    card iv      as "IV (16 B losowych)"
+    card aes_enc as "AES-128-CBC\nszyfrowanie"
+    card hmac_s  as "HMAC-SHA256\npodpis"
+    card token   as "Token Fernet\n(base64url)"
+
+    dane   --> aes_enc
+    iv     --> aes_enc
+    klucz  --> aes_enc
+    aes_enc --> hmac_s
+    klucz  --> hmac_s
+    hmac_s --> token
+}
+
+rectangle "Deszyfrowanie Fernet" #E4F5E4 {
+    card token2  as "Token Fernet"
+    card hmac_v  as "Weryfikacja HMAC"
+    card aes_dec as "AES-128-CBC\ndeszyfrowanie"
+    card wynik   as "Plaintext (bytes)"
+
+    token2 --> hmac_v
+    klucz  --> hmac_v
+    hmac_v --> aes_dec : OK
+    aes_dec --> wynik
+}
+
+U --> dane
+U --> token2
+token --> U
+
+note right of token
+  Format tokenu Fernet:
+  Version(1) | Timestamp(8) | IV(16)
+  | Ciphertext(N) | HMAC(32)
+  Całość base64url-encoded
+end note
+@enduml
+

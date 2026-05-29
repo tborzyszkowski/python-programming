@@ -1,0 +1,42 @@
+@startuml text_encoding
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "DejaVu Sans"
+skinparam rectangleBackgroundColor #EEF6FF
+skinparam arrowColor #336699
+
+title Kodowanie znakow: Python str i plik
+
+rectangle "Python str w pamieci" as SRC #FFE4B5 {
+    card s1 as "\"Zazolc gesla jazn\"\nUnicode code points\nU+005A U+0061 ..."
+}
+
+rectangle "encode('utf-8')" as ENC_U #E4F5E4 {
+    card u1 as "bytes: 0x5A 0x61 0xC5 0xBC ...\n(2 bajty na znak spoza ASCII)"
+}
+
+rectangle "encode('latin-2')" as ENC_L #FFF8EE {
+    card l1 as "bytes: 0x5A 0x61 0xBC ...\n(1 bajt na znak)"
+}
+
+database "plik_utf8.txt" as FUTF #LightBlue
+database "plik_latin2.txt" as FLAT #LightCyan
+
+SRC --> ENC_U
+SRC --> ENC_L
+ENC_U --> FUTF
+ENC_L --> FLAT
+
+note right of FUTF
+  UTF-8: 'a z kreska' = 0xC4 0x85 (2 bajty)
+  Kompatybilny z ASCII dla znakow US
+  Rekomendowany standard wszechy
+end note
+
+note right of FLAT
+  Latin-2: 'a z kreska' = 0xB1 (1 bajt)
+  Tylko znaki europejskie
+  Starsze polskie pliki
+end note
+@enduml
+

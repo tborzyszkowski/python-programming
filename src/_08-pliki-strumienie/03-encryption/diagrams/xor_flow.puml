@@ -1,0 +1,34 @@
+@startuml xor_flow
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Szyfr XOR — przepływ szyfrowania i deszyfrowania
+
+rectangle "Szyfrowanie" #EEF6FF {
+    card P1 as "Plaintext\nb'Hello'"
+    card K1 as "Klucz\nb'KEY'"
+    card C1 as "Ciphertext\nb'\\x03\\x00\\x15\\x0a\\x06'"
+    P1 --> C1 : XOR (bajt po bajcie\nz cyklicznym kluczem)
+    K1 --> C1
+}
+
+rectangle "Deszyfrowanie" #E4F5E4 {
+    card C2 as "Ciphertext\nb'\\x03\\x00\\x15\\x0a\\x06'"
+    card K2 as "Klucz\nb'KEY'"
+    card P2 as "Plaintext\nb'Hello'"
+    C2 --> P2 : XOR (ta sama operacja!)
+    K2 --> P2
+}
+
+note bottom
+  Właściwość XOR: a XOR k XOR k == a
+  Ten sam klucz i ta sama operacja
+  do szyfrowania i deszyfrowania.
+
+  Słabości XOR:
+  - klucz krótszy niż dane → podatny na analizę
+  - klucz=0x00 → brak szyfrowania
+  - znany plaintext → ujawnia klucz
+end note
+@enduml
+

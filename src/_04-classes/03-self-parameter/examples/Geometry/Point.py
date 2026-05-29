@@ -23,7 +23,7 @@ class Point:
 
     @y.setter
     def y(self, y):
-        self.__y = y if y >= 0 else -y
+        self.__y = y if Point.is_valid(y) else -y
 
     def distance(self, point):
         return math.sqrt((self.x - point.x) ** 2 + (self.y - point.y) ** 2)

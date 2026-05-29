@@ -1,6 +1,6 @@
 import unittest
 
-from Laboratorium._04_klasy.Geometry.Point import Point
+from Geometry.Point import Point
 
 
 class PointTest(unittest.TestCase):

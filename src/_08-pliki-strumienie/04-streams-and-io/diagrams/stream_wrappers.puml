@@ -1,0 +1,40 @@
+@startuml stream_wrappers
+!theme plain
+skinparam backgroundColor #FAFAFA
+
+title Łańcuchowanie (wrappowanie) strumieni w Pythonie
+
+rectangle "Źródło danych" #LightYellow {
+    card disk   as "Plik na dysku\n(bytes)"
+    card net    as "Gniazdo sieciowe\n(bytes)"
+    card mem    as "BytesIO\n(bytes w pamięci)"
+}
+
+rectangle "Warstwa buforowania" #EEF6FF {
+    card buf_r  as "BufferedReader\n(bufor odczytu ~8 KB)"
+    card buf_w  as "BufferedWriter\n(bufor zapisu ~8 KB)"
+}
+
+rectangle "Warstwa tekstowa" #E4F5E4 {
+    card txt    as "TextIOWrapper\n(dekodowanie UTF-8 / Latin-2)"
+    card sio    as "StringIO\n(str w pamięci)"
+}
+
+rectangle "Kod użytkownika" #FFE4B5 {
+    card kod    as "f.readline()\ncsv.reader(f)\nfor linia in f:"
+}
+
+disk --> buf_r  : FileIO('plik', 'rb')
+net  --> buf_r  : socket.makefile('rb')
+mem  --> buf_r  : (bezpośrednio)
+buf_r --> txt   : TextIOWrapper(buf, encoding='utf-8')
+sio  --> kod
+txt  --> kod
+
+note bottom of txt
+  open("plik.txt", "r", encoding="utf-8")
+  == TextIOWrapper(BufferedReader(FileIO("plik.txt")))
+  Python tworzy ten łańcuch automatycznie!
+end note
+@enduml
+

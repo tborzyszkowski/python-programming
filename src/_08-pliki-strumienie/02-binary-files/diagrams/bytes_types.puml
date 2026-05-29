@@ -1,0 +1,62 @@
+@startuml bytes_types
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #EEF6FF
+
+title Typy danych binarnych w Pythonie
+
+class "str" as STR #FFE4B5 {
+    Ciąg znaków Unicode
+    ..
+    "Witaj" → U+0057 U+0069 ...
+    len("Witaj") == 5
+    --
+    encode(encoding) → bytes
+    Niemutowalny
+}
+
+class "bytes" as BY #E4F5E4 {
+    Niemutowalny ciąg bajtów 0-255
+    ..
+    b'Hello' == bytes([72,101,108,108,111])
+    len(b'Hello') == 5
+    --
+    decode(encoding) → str
+    hex() → str
+    Niemutowalny
+}
+
+class "bytearray" as BA #FFE4E4 {
+    Mutowalny ciąg bajtów 0-255
+    ..
+    ba = bytearray(b'Hello')
+    ba[0] = 72
+    --
+    decode(encoding) → str
+    hex() → str
+    Mutowalny: ba[i] = wartość
+}
+
+class "memoryview" as MV #E4E4FF {
+    Widok na bufor binarny
+    bez kopiowania
+    ..
+    mv = memoryview(ba)
+    mv[1:3]   # slice bez kopii
+    --
+    Wydajny dla dużych buforów
+}
+
+STR --> BY : encode("utf-8")
+BY --> STR : decode("utf-8")
+BY --> BA  : bytearray(b)
+BA --> BY  : bytes(ba)
+BA --> MV  : memoryview(ba)
+BY --> MV  : memoryview(b)
+
+note bottom of BY
+  Tryb binarny:
+  open("plik", "rb") → bytes
+end note
+@enduml
+

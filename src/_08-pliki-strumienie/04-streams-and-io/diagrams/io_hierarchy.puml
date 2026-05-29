@@ -1,0 +1,84 @@
+@startuml io_hierarchy
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #EEF6FF
+
+title Hierarchia klas modułu io w Pythonie
+
+abstract class IOBase {
+    + close()
+    + closed : bool
+    + readable() : bool
+    + writable() : bool
+    + seekable() : bool
+    + flush()
+    + __iter__()
+}
+
+abstract class RawIOBase extends IOBase {
+    + read(size) : bytes
+    + readinto(b) : int
+    + write(b) : int
+}
+
+abstract class BufferedIOBase extends IOBase {
+    + read(size) : bytes
+    + read1(size) : bytes
+    + write(b) : int
+    + detach() : RawIOBase
+}
+
+abstract class TextIOBase extends IOBase {
+    + read(size) : str
+    + readline() : str
+    + write(s) : int
+    + seek(pos)
+    + tell() : int
+    + encoding : str
+}
+
+class FileIO extends RawIOBase {
+    <<plik na dysku, tryb 'rb'>>
+}
+
+class BufferedReader extends BufferedIOBase {
+    <<buforowany odczyt>>
+}
+class BufferedWriter extends BufferedIOBase {
+    <<buforowany zapis>>
+}
+class BytesIO extends BufferedIOBase {
+    <<bufor w pamięci (bytes)>>
+    + getvalue() : bytes
+}
+
+class TextIOWrapper extends TextIOBase {
+    <<opakowanie bufora binarnego>>
+    + buffer : BufferedIOBase
+    + encoding : str
+}
+class StringIO extends TextIOBase {
+    <<bufor w pamięci (str)>>
+    + getvalue() : str
+}
+
+FileIO --> BufferedReader : opakowanie
+FileIO --> BufferedWriter : opakowanie
+BufferedReader --> TextIOWrapper : opakowanie
+BufferedWriter --> TextIOWrapper : opakowanie
+
+note right of BytesIO
+  from io import BytesIO
+  buf = BytesIO()
+  buf.write(b"dane")
+  buf.seek(0); buf.read()
+end note
+
+note right of StringIO
+  from io import StringIO
+  buf = StringIO()
+  buf.write("tekst")
+  buf.getvalue()  # bez seek!
+end note
+@enduml
+

@@ -1,0 +1,65 @@
+@startuml pathlib_hierarchy
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam classBackgroundColor #EEF6FF
+
+title Hierarchia klas pathlib (uproszczona)
+
+abstract class PurePath {
+    + parts: tuple
+    + drive: str
+    + root: str
+    + parent: PurePath
+    + name: str
+    + stem: str
+    + suffix: str
+    + suffixes: list
+    --
+    + joinpath(*args)
+    + with_name(name)
+    + with_suffix(suffix)
+    + is_absolute()
+    + match(pattern)
+}
+
+abstract class Path extends PurePath {
+    --
+    + exists() : bool
+    + is_file() : bool
+    + is_dir() : bool
+    + stat() : os.stat_result
+    --
+    + open(mode, encoding)
+    + read_text(encoding) : str
+    + write_text(data, encoding)
+    + read_bytes() : bytes
+    + write_bytes(data)
+    --
+    + mkdir(parents, exist_ok)
+    + rmdir()
+    + unlink()
+    + rename(target)
+    + glob(pattern)
+    + iterdir()
+}
+
+class PosixPath extends Path {
+    <<Linux / macOS>>
+}
+
+class WindowsPath extends Path {
+    <<Windows>>
+}
+
+note right of Path
+  Path("katalog") / "plik.txt"
+  ==
+  Path("katalog/plik.txt")
+end note
+
+note bottom of WindowsPath
+  Tworzony automatycznie
+  na platformie Windows
+end note
+@enduml
+

@@ -1,0 +1,39 @@
+@startuml pipeline
+!theme plain
+skinparam backgroundColor #FAFAFA
+skinparam defaultFontName "DejaVu Sans"
+
+title Potok generatorów — przetwarzanie strumieniowe
+
+rectangle "Źródło" #LightYellow {
+    card src as "open('duzy.log')\ngenerator linii\n(linia po linii)"
+}
+
+rectangle "Filtr 1" #EEF6FF {
+    card f1 as "odfiltruj('ERROR')\nyield jeśli pasuje"
+}
+
+rectangle "Transformacja" #E4F5E4 {
+    card t1 as "usun_biale()\nlinia.rstrip()"
+}
+
+rectangle "Filtr 2" #FFF8EE {
+    card f2 as "porcjuj(n=100)\nitertools.islice"
+}
+
+rectangle "Konsument" #FFE4B5 {
+    card sink as "for porcja in potok:\n  zapisz_do_bazy(porcja)"
+}
+
+src --> f1   : jedna linia naraz
+f1  --> t1   : pasujące linie
+t1  --> f2   : oczyszczone linie
+f2  --> sink : paczki po 100 linii
+
+note bottom
+  Każdy etap żąda następnego elementu dopiero gdy
+  konsument go potrzebuje (pull model, leniwe wartościowanie).
+  Zużycie RAM: O(1) — niezależnie od rozmiaru pliku!
+end note
+@enduml
+

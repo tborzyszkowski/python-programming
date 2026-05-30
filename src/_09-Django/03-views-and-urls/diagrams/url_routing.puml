@@ -1,0 +1,35 @@
+@startuml url_routing
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Routing URL w Django
+
+rectangle "bookshelf/urls.py" as root {
+    rectangle "path('admin/', admin.site.urls)" as admin_url
+    rectangle "path('', include('catalog.urls'))" as catalog_include
+}
+
+rectangle "catalog/urls.py" as catalog {
+    rectangle "path('', views.home)" as home
+    rectangle "path('authors/', views.author_list)" as alist
+    rectangle "path('authors/<int:pk>/', views.author_detail)" as adetail
+    rectangle "path('authors/new/', views.author_create)" as acreate
+    rectangle "path('authors/<int:pk>/edit/', views.author_update)" as aupdate
+    rectangle "path('authors/<int:pk>/delete/', views.author_delete)" as adelete
+    rectangle "path('books/', views.book_list)" as blist
+    rectangle "path('books/<int:pk>/', views.book_detail)" as bdetail
+}
+
+root --> catalog : include()
+catalog_include --> catalog
+
+note bottom
+  <int:pk> – konwerter typów:
+  int → liczba całkowita
+  str → dowolny tekst
+  slug → "slug-url"
+  uuid → UUID
+end note
+
+@enduml
+

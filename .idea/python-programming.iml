@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/_04-classes/03-self-parameter/examples" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/_04-classes/05-private-members/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/_09-Django/06-complete-app/bookshelf" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.12" jdkType="Python SDK" />

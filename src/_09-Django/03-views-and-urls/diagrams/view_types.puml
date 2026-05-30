@@ -1,0 +1,66 @@
+@startuml view_types
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Rodzaje widoków w Django
+
+abstract class "View (django.views.View)" as View {
+    + dispatch(request, *args, **kwargs)
+    + get(request, *args, **kwargs)
+    + post(request, *args, **kwargs)
+}
+
+class "ListView" as LV {
+    + model
+    + template_name
+    + context_object_name
+    + queryset
+    + get_queryset()
+}
+
+class "DetailView" as DV {
+    + model
+    + template_name
+    + pk_url_kwarg = 'pk'
+}
+
+class "CreateView" as CV {
+    + model
+    + form_class
+    + template_name
+    + success_url
+}
+
+class "UpdateView" as UV {
+    + model
+    + form_class
+    + template_name
+    + success_url
+}
+
+class "DeleteView" as DelV {
+    + model
+    + template_name
+    + success_url
+}
+
+class "FBV\n(Function-Based View)" as FBV {
+    + def view_fn(request, pk=None)
+    + @require_http_methods(["GET","POST"])
+}
+
+View <|-- LV
+View <|-- DV
+View <|-- CV
+View <|-- UV
+View <|-- DelV
+
+note bottom of FBV
+  FBV: prosta, jawna,
+  dobra do nauki.
+  CBV: zwięzła, wielokrotnego
+  użytku przez dziedziczenie.
+end note
+
+@enduml
+

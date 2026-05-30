@@ -1,0 +1,36 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ book.title }}</h1>
+
+    <p>
+        <strong>Autor:</strong>
+        <a href="{% url 'catalog:author_detail' pk=book.author.pk %}">{{ book.author }}</a>
+    </p>
+    {% if book.year %}
+        <p><strong>Rok wydania:</strong> {{ book.year }}</p>
+    {% endif %}
+    {% if book.isbn %}
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+    {% endif %}
+    {% if book.description %}
+        <p style="margin-top:.6rem;"><strong>Opis:</strong><br>{{ book.description|linebreaks }}</p>
+    {% endif %}
+    <p style="margin-top:.6rem; color:#999; font-size:.85rem;">
+        Dodano: {{ book.created_at|date:"d.m.Y H:i" }}
+    </p>
+
+    <div class="actions">
+        <a href="{% url 'catalog:book_update' pk=book.pk %}" class="btn btn-warning">Edytuj</a>
+        <a href="{% url 'catalog:book_delete' pk=book.pk %}" class="btn btn-danger">Usuń</a>
+        <a href="{% url 'catalog:author_detail' pk=book.author.pk %}" class="btn btn-secondary">
+            ← {{ book.author }}
+        </a>
+        <a href="{% url 'catalog:book_list' %}" class="btn btn-secondary">Lista książek</a>
+    </div>
+</div>
+{% endblock %}
+

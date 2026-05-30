@@ -1,0 +1,108 @@
+[
+  {
+    "model": "catalog.author",
+    "pk": 1,
+    "fields": {
+      "first_name": "Adam",
+      "last_name": "Mickiewicz",
+      "birth_year": 1798,
+      "bio": "Najwybitniejszy polski poeta romantyczny, autor Pana Tadeusza i Dziadów.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.author",
+    "pk": 2,
+    "fields": {
+      "first_name": "Bolesław",
+      "last_name": "Prus",
+      "birth_year": 1847,
+      "bio": "Prozaik i publicysta, autor Lalki i Faraona.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.author",
+    "pk": 3,
+    "fields": {
+      "first_name": "Stanisław",
+      "last_name": "Lem",
+      "birth_year": 1921,
+      "bio": "Pisarz science-fiction, autor Solaris i Cyberiady.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 1,
+    "fields": {
+      "title": "Pan Tadeusz",
+      "author": 1,
+      "year": 1834,
+      "isbn": "9788307031552",
+      "description": "Epopeja narodowa – ostatni zajazd na Litwie.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 2,
+    "fields": {
+      "title": "Dziady",
+      "author": 1,
+      "year": 1823,
+      "isbn": "",
+      "description": "Dramat romantyczny w kilku częściach.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 3,
+    "fields": {
+      "title": "Lalka",
+      "author": 2,
+      "year": 1890,
+      "isbn": "9788307031569",
+      "description": "Powieść o miłości Wokulskiego i rozpadzie ideałów pozytywizmu.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 4,
+    "fields": {
+      "title": "Faraon",
+      "author": 2,
+      "year": 1897,
+      "isbn": "",
+      "description": "Powieść historyczna o starożytnym Egipcie.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 5,
+    "fields": {
+      "title": "Solaris",
+      "author": 3,
+      "year": 1961,
+      "isbn": "9788308017791",
+      "description": "Kontakt z niezrozumiałą obcą inteligencją na planecie Solaris.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  },
+  {
+    "model": "catalog.book",
+    "pk": 6,
+    "fields": {
+      "title": "Cyberiada",
+      "author": 3,
+      "year": 1965,
+      "isbn": "",
+      "description": "Zbiór opowiadań o konstruktorach Trurlu i Klapaucjuszu.",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  }
+]
+

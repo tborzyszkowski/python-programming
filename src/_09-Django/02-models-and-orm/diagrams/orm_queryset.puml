@@ -1,0 +1,32 @@
+@startuml orm_queryset
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title ORM Django – QuerySet API
+
+class "QuerySet API" as qs {
+    + all() : QuerySet
+    + filter(**kwargs) : QuerySet
+    + exclude(**kwargs) : QuerySet
+    + get(**kwargs) : Model instance
+    + order_by(*fields) : QuerySet
+    + values(*fields) : ValuesQuerySet
+    + count() : int
+    + first() / last() : Model or None
+    + exists() : bool
+    + select_related(*fields) : QuerySet
+    + prefetch_related(*fields) : QuerySet
+    + create(**kwargs) : Model instance
+    + update(**kwargs) : int
+    + delete() : tuple
+}
+
+note top of qs
+  QuerySet jest "leniwy" (lazy):
+  SQL jest wykonywany dopiero
+  przy iteracji lub konwersji
+  do listy/slice.
+end note
+
+@enduml
+

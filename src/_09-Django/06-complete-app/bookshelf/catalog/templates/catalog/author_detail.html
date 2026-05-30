@@ -1,0 +1,52 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ author }} – Autor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>{{ author.first_name }} {{ author.last_name }}</h1>
+    {% if author.birth_year %}
+        <p><strong>Rok urodzenia:</strong> {{ author.birth_year }}</p>
+    {% endif %}
+    {% if author.bio %}
+        <p style="margin-top:.5rem;">{{ author.bio|linebreaks }}</p>
+    {% endif %}
+    <div class="actions">
+        <a href="{% url 'catalog:author_update' pk=author.pk %}" class="btn btn-warning">Edytuj</a>
+        <a href="{% url 'catalog:author_delete' pk=author.pk %}" class="btn btn-danger">Usuń</a>
+        <a href="{% url 'catalog:author_list' %}" class="btn btn-secondary">← Lista autorów</a>
+    </div>
+</div>
+
+<h2>Książki autora <span class="badge">{{ books.count }}</span></h2>
+
+<div class="actions" style="margin-bottom:.8rem;">
+    <a href="{% url 'catalog:book_create' %}?author={{ author.pk }}" class="btn btn-primary">
+        + Dodaj książkę
+    </a>
+</div>
+
+{% if books %}
+<table>
+    <thead>
+        <tr><th>Tytuł</th><th>Rok</th><th>ISBN</th><th>Akcje</th></tr>
+    </thead>
+    <tbody>
+    {% for book in books %}
+        <tr>
+            <td><a href="{% url 'catalog:book_detail' pk=book.pk %}">{{ book.title }}</a></td>
+            <td>{{ book.year|default:"–" }}</td>
+            <td>{{ book.isbn|default:"–" }}</td>
+            <td>
+                <a href="{% url 'catalog:book_update' pk=book.pk %}" class="btn btn-warning" style="font-size:.8rem;padding:.2rem .6rem;">Edytuj</a>
+                <a href="{% url 'catalog:book_delete' pk=book.pk %}" class="btn btn-danger" style="font-size:.8rem;padding:.2rem .6rem;">Usuń</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Ten autor nie ma jeszcze żadnych książek.</p>
+{% endif %}
+{% endblock %}
+

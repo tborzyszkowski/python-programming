@@ -1,0 +1,36 @@
+@startuml db_schema
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Schemat bazy danych – Bookshelf
+
+entity "catalog_author" as author {
+    * id : INTEGER PRIMARY KEY AUTOINCREMENT
+    --
+    * first_name : VARCHAR(100)
+    * last_name : VARCHAR(100)
+    birth_year : INTEGER NULL
+    bio : TEXT
+    * created_at : DATETIME
+}
+
+entity "catalog_book" as book {
+    * id : INTEGER PRIMARY KEY AUTOINCREMENT
+    --
+    * title : VARCHAR(200)
+    * author_id : INTEGER FK
+    year : INTEGER NULL
+    isbn : VARCHAR(20)
+    description : TEXT
+    * created_at : DATETIME
+}
+
+author ||--o{ book : "author_id → catalog_author.id\nON DELETE CASCADE"
+
+note bottom of book
+  INDEX na author_id (automatyczny dla FK)
+  Constraint: author_id NOT NULL
+end note
+
+@enduml
+

@@ -1,0 +1,33 @@
+@startuml crud_operations
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Operacje CRUD w Django
+
+package "CREATE" {
+    rectangle "GET /authors/new/\n→ pusty formularz" as c_get
+    rectangle "POST /authors/new/\n→ form.save()\n→ redirect" as c_post
+}
+
+package "READ" {
+    rectangle "GET /authors/\n→ Author.objects.all()\n→ lista" as r_list
+    rectangle "GET /authors/42/\n→ Author.objects.get(pk=42)\n→ szczegóły" as r_detail
+}
+
+package "UPDATE" {
+    rectangle "GET /authors/42/edit/\n→ formularz z danymi" as u_get
+    rectangle "POST /authors/42/edit/\n→ form.save()\n→ redirect" as u_post
+}
+
+package "DELETE" {
+    rectangle "GET /authors/42/delete/\n→ potwierdzenie" as d_get
+    rectangle "POST /authors/42/delete/\n→ author.delete()\n→ redirect" as d_post
+}
+
+c_get --> c_post : użytkownik wysyła
+r_list --> r_detail : klik w autora
+u_get --> u_post : użytkownik edytuje
+d_get --> d_post : potwierdza usunięcie
+
+@enduml
+

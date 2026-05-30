@@ -1,0 +1,31 @@
+@startuml models_erd
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Diagram ERD – Author i Book (relacja 1:N)
+
+entity "Author" as author {
+    * id : INTEGER <<PK, auto>>
+    --
+    * first_name : VARCHAR(100)
+    * last_name : VARCHAR(100)
+    birth_year : INTEGER
+    bio : TEXT
+    * created_at : DATETIME
+}
+
+entity "Book" as book {
+    * id : INTEGER <<PK, auto>>
+    --
+    * title : VARCHAR(200)
+    * author_id : INTEGER <<FK>>
+    year : INTEGER
+    isbn : VARCHAR(20)
+    description : TEXT
+    * created_at : DATETIME
+}
+
+author ||--o{ book : "napisał"
+
+@enduml
+

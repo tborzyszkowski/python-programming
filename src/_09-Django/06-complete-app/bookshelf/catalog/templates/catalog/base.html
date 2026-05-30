@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Półka z Książkami{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: "Segoe UI", sans-serif; background: #f5f5f5; color: #333; }
+        nav {
+            background: #2c3e50; color: white; padding: 0.8rem 1.5rem;
+            display: flex; align-items: center; gap: 1.5rem;
+        }
+        nav .brand { font-size: 1.2rem; font-weight: bold; color: #ecf0f1; text-decoration: none; }
+        nav a { color: #bdc3c7; text-decoration: none; font-size: 0.95rem; }
+        nav a:hover { color: white; }
+        .container { max-width: 960px; margin: 1.5rem auto; padding: 0 1rem; }
+        h1 { font-size: 1.8rem; margin-bottom: 1rem; color: #2c3e50; }
+        h2 { font-size: 1.3rem; margin: 1.2rem 0 0.6rem; color: #34495e; }
+        .btn {
+            display: inline-block; padding: 0.4rem 0.9rem; border-radius: 4px;
+            text-decoration: none; font-size: 0.9rem; cursor: pointer; border: none;
+        }
+        .btn-primary  { background: #2980b9; color: white; }
+        .btn-success  { background: #27ae60; color: white; }
+        .btn-warning  { background: #f39c12; color: white; }
+        .btn-danger   { background: #c0392b; color: white; }
+        .btn-secondary{ background: #7f8c8d; color: white; }
+        .btn:hover    { opacity: 0.85; }
+        table { width: 100%; border-collapse: collapse; background: white;
+                border-radius: 6px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+        th { background: #34495e; color: white; padding: 0.6rem 0.8rem; text-align: left; }
+        td { padding: 0.55rem 0.8rem; border-bottom: 1px solid #ecf0f1; }
+        tr:hover td { background: #f8f9fa; }
+        .card {
+            background: white; border-radius: 6px; padding: 1.2rem;
+            margin-bottom: 1rem; box-shadow: 0 1px 4px rgba(0,0,0,.1);
+        }
+        .alert { padding: 0.7rem 1rem; border-radius: 4px; margin-bottom: 0.8rem; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .alert-error   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .form-group { margin-bottom: 0.9rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.45rem 0.6rem; border: 1px solid #ccc;
+            border-radius: 4px; font-size: 0.95rem; font-family: inherit;
+        }
+        .errorlist { color: #c0392b; font-size: 0.85rem; list-style: none;
+                     margin-top: 0.2rem; padding: 0; }
+        .actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+        footer { text-align: center; padding: 1.5rem; color: #999; font-size: 0.85rem; }
+        .search-form { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .search-form input { flex: 1; padding: 0.4rem 0.7rem; border: 1px solid #ccc;
+                              border-radius: 4px; }
+        .badge { background: #3498db; color: white; border-radius: 3px;
+                 padding: 0.1rem 0.4rem; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a class="brand" href="{% url 'catalog:home' %}">📚 Półka z Książkami</a>
+    <a href="{% url 'catalog:author_list' %}">Autorzy</a>
+    <a href="{% url 'catalog:book_list' %}">Książki</a>
+    <a href="{% url 'catalog:author_create' %}">+ Autor</a>
+    <a href="{% url 'catalog:book_create' %}">+ Książka</a>
+</nav>
+
+<div class="container">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+</div>
+
+<footer>
+    <p>Półka z Książkami – przykładowa aplikacja Django | Moduł 09</p>
+</footer>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+@startuml request_lifecycle
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Cykl życia żądania HTTP w Django
+
+start
+
+:Przeglądarka wysyła\nHTTP Request;
+
+:Django Middleware\n(SecurityMiddleware,\nSessionMiddleware...);
+
+:URLconf (urls.py)\ndopasowuje wzorzec URL;
+
+if (wzorzec znaleziony?) then (tak)
+    :Wywołanie widoku\n(View Function / CBV);
+    :Widok pobiera dane\nz modelu (ORM);
+    :Widok przekazuje context\ndo szablonu;
+    :Silnik szablonów\ngeneruje HTML;
+    :Middleware przetwarza\nodpowiedź;
+    :HTTP Response 200 OK;
+else (nie)
+    :HTTP Response 404 Not Found;
+endif
+
+:Przeglądarka wyświetla\nstronę;
+
+stop
+
+@enduml
+

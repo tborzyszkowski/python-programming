@@ -1,0 +1,23 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Usuń książkę: {{ book.title }}{% endblock %}
+
+{% block content %}
+<h1>Usuń książkę</h1>
+
+<div class="card">
+    <p>Czy na pewno chcesz usunąć książkę
+        <strong>{{ book.title }}</strong>
+        ({{ book.author }})?
+    </p>
+
+    <form method="post" style="margin-top:1rem;">
+        {% csrf_token %}
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Tak, usuń</button>
+            <a href="{% url 'catalog:book_detail' pk=book.pk %}" class="btn btn-secondary">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,31 @@
+@startuml migration_flow
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Przepływ migracji w Django
+
+start
+
+:Edytujesz models.py\n(dodajesz/zmieniasz klasy);
+
+:python manage.py\nmakemigrations;
+
+:Django wykrywa różnice\ni tworzy plik migracji\n0001_initial.py;
+
+:python manage.py migrate;
+
+:Django wykonuje SQL\n(CREATE TABLE, ALTER TABLE...)\nna bazie danych;
+
+:db.sqlite3\nzaktualizowana;
+
+stop
+
+note right
+  Każda migracja to\n
+  "migawka" zmian modeli.\n
+  Można cofnąć:\n
+  manage.py migrate app 0001
+end note
+
+@enduml
+

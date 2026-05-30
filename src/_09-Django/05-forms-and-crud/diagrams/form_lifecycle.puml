@@ -1,0 +1,34 @@
+@startuml form_lifecycle
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Cykl życia formularza Django
+
+start
+
+:Użytkownik wchodzi\nna /authors/new/\n(GET);
+
+:Django tworzy\npusty formularz\nAuthorForm();
+
+:Renderuje szablon\nauthor_form.html;
+
+:Użytkownik wypełnia\ni wysyła (POST);
+
+:Django tworzy\nAuthorForm(request.POST);
+
+:form.is_valid()?;
+
+if (Walidacja OK?) then (tak)
+    :form.save()\nzapisuje do bazy;
+    :messages.success(...);
+    :redirect('author_list')\nPOST-Redirect-GET;
+    :Lista autorów (GET);
+else (nie)
+    :Renderuje formularz\nz błędami walidacji;
+    :Użytkownik poprawia\ni wysyła ponownie;
+endif
+
+stop
+
+@enduml
+

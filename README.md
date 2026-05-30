@@ -75,7 +75,13 @@ python -m pytest src/_07-html-parser -c src/_07-html-parser/pytest.ini -v
 .venv\Scripts\python.exe src\_05-exceptions\generate_diagrams.py
 .venv\Scripts\python.exe src\_06-regex\generate_diagrams.py
 .venv\Scripts\python.exe src\_07-html-parser\generate_diagrams.py
+.venv\Scripts\python.exe src\_08-pliki-strumienie\generate_diagrams.py
+.venv\Scripts\python.exe src\_09-Django\generate_diagrams.py
 ```
+
+> **Moduł 09 – Django:** diagramy generuje ten sam skrypt, ale testy uruchamia się przez
+> `python manage.py test catalog` lub `pytest` z katalogu
+> `src/_09-Django/06-complete-app/bookshelf/`.
 
 ## Moduły kursu
 
@@ -86,6 +92,8 @@ python -m pytest src/_07-html-parser -c src/_07-html-parser/pytest.ini -v
 - [`src/_05-exceptions/README.md`](src/_05-exceptions/README.md) - wyjątki, obsługa plików i serializacja (`pickle`)
 - [`src/_06-regex/README.md`](src/_06-regex/README.md) - wyrażenia regularne (składnia, moduł `re`, grupy, flagi, wzorce zaawansowane)
 - [`src/_07-html-parser/README.md`](src/_07-html-parser/README.md) - HTMLParser (parser strumieniowy, zdarzenia, ekstrakcja linków, zliczanie tagów, alternatywy)
+- [`src/_08-pliki-strumienie/README.md`](src/_08-pliki-strumienie/README.md) - pliki i strumienie (tekstowe, binarne, szyfrowanie, io, generatory)
+- [`src/_09-Django/README.md`](src/_09-Django/README.md) - Django: MVT, modele, widoki, szablony, formularze, CRUD, SQLite
 
 ## Jak wybrać moduł na start?
 
@@ -98,6 +106,8 @@ Dla studentów I roku polecana kolejność pracy:
 5. **`_05-exceptions`** - obsługa błędów, pliki tekstowe i binarne, serializacja.
 6. **`_06-regex`** - wyrażenia regularne: składnia, moduł `re`, grupy, flagi, zaawansowane wzorce, walidacja.
 7. **`_07-html-parser`** - HTMLParser: parser strumieniowy, zdarzenia, ekstrakcja linków, zliczanie tagów, ograniczenia i alternatywy.
+8. **`_08-pliki-strumienie`** - pliki tekstowe i binarne, szyfrowanie, strumienie `io`, generatory i potoki.
+9. **`_09-Django`** - tworzenie aplikacji webowych w Django: MVT, ORM, szablony HTML, formularze, pełny CRUD.
 
 Sugerowany rytm nauki:
 - najpierw przeczytaj `README.md` wybranego tematu,
@@ -187,9 +197,35 @@ python-programming/
         ├── 04-link-extraction/          # ekstrakcja linków (szczegółowo)
         ├── 05-tag-counting/             # zliczanie tagów i statystyki
         └── 06-limitations-and-alternatives/ # ograniczenia i alternatywy
+    ├── _08-pliki-strumienie/
+    │   ├── pytest.ini
+    │   ├── generate_diagrams.py
+    │   ├── 01-text-files/        # pliki tekstowe, kodowania, pathlib
+    │   ├── 02-binary-files/      # pliki binarne, struct, mmap
+    │   ├── 03-encryption/        # szyfrowanie XOR, AES/Fernet, SHA-256
+    │   ├── 04-streams-and-io/    # strumienie io (StringIO, BytesIO)
+    └── 05-stream-filtering/  # filtrowanie strumieni, generatory, potoki
+    └── _09-Django/
+        ├── README.md             # przegląd modułu
+        ├── generate_diagrams.py  # generator PNG z .puml
+        ├── 01-introduction-and-setup/  # MVT, instalacja, pierwszy projekt
+        ├── 02-models-and-orm/          # modele, ForeignKey, migracje, ORM
+        ├── 03-views-and-urls/          # routing, widoki FBV i CBV
+        ├── 04-templates/               # szablony DTL, dziedziczenie
+        ├── 05-forms-and-crud/          # formularze, walidacja, CRUD
+        └── 06-complete-app/            # kompletna aplikacja Bookshelf
+            └── bookshelf/              # projekt Django (38 testów)
 ```
 
 ## Zależności
+
+| Pakiet       | Wersja  | Opis                                        |
+|--------------|---------|---------------------------------------------|
+| pytest       | ≥ 7.4   | framework do testów jednostkowych           |
+| pytest-cov   | ≥ 4.1   | pokrycie kodu testami                       |
+| plantuml     | ≥ 0.3   | generowanie diagramów PNG z .puml           |
+| django       | ≥ 4.2   | framework webowy (moduł _09-Django)         |
+| pytest-django| ≥ 4.5   | integracja pytest z Django (moduł _09)      |
 
 | Pakiet       | Wersja  | Opis                               |
 |--------------|---------|------------------------------------|

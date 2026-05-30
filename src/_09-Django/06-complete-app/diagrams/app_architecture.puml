@@ -1,0 +1,48 @@
+@startuml app_architecture
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Architektura aplikacji Bookshelf
+
+package "Szablony (Templates)" {
+    [base.html]
+    [author_list.html]
+    [author_detail.html]
+    [author_form.html]
+    [book_list.html]
+    [book_detail.html]
+    [book_form.html]
+}
+
+package "Logika (Views + URLs + Forms)" {
+    [urls.py]
+    [views.py]
+    [forms.py]
+}
+
+package "Dane (Models)" {
+    [Author]
+    [Book]
+}
+
+database "SQLite\ndb.sqlite3" as db
+
+[views.py] --> [Author] : ORM
+[views.py] --> [Book] : ORM
+[Author] --> db
+[Book] --> db
+[urls.py] --> [views.py] : routing
+[views.py] --> [forms.py] : walidacja
+[views.py] ..> [author_list.html] : render()
+[views.py] ..> [book_list.html] : render()
+[author_list.html] ..> [base.html] : extends
+[book_list.html] ..> [base.html] : extends
+
+note right of [Book]
+  author = ForeignKey(Author)
+  ON DELETE CASCADE
+end note
+
+@enduml
+
+

@@ -1,0 +1,45 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Strona główna – Półka z Książkami{% endblock %}
+
+{% block content %}
+<h1>📚 Półka z Książkami</h1>
+
+<div style="display:flex; gap:1rem; margin-bottom:1.5rem;">
+    <div class="card" style="flex:1; text-align:center;">
+        <div style="font-size:2.5rem; color:#2980b9;">{{ authors_count }}</div>
+        <div>autorów w katalogu</div>
+        <a href="{% url 'catalog:author_list' %}" class="btn btn-primary" style="margin-top:.5rem;">
+            Przeglądaj
+        </a>
+    </div>
+    <div class="card" style="flex:1; text-align:center;">
+        <div style="font-size:2.5rem; color:#27ae60;">{{ books_count }}</div>
+        <div>książek w katalogu</div>
+        <a href="{% url 'catalog:book_list' %}" class="btn btn-success" style="margin-top:.5rem;">
+            Przeglądaj
+        </a>
+    </div>
+</div>
+
+<h2>Ostatnio dodane</h2>
+{% if recent_books %}
+<ul>
+    {% for book in recent_books %}
+    <li>
+        <a href="{% url 'catalog:book_detail' pk=book.pk %}">{{ book.title }}</a>
+        – <a href="{% url 'catalog:author_detail' pk=book.author.pk %}">{{ book.author }}</a>
+        {% if book.year %}({{ book.year }}){% endif %}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Brak książek. <a href="{% url 'catalog:book_create' %}">Dodaj pierwszą!</a></p>
+{% endif %}
+
+<div class="actions" style="margin-top:1rem;">
+    <a href="{% url 'catalog:author_create' %}" class="btn btn-primary">+ Nowy autor</a>
+    <a href="{% url 'catalog:book_create' %}" class="btn btn-success">+ Nowa książka</a>
+</div>
+{% endblock %}
+

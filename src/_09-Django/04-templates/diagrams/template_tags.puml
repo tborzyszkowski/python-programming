@@ -1,0 +1,36 @@
+@startuml template_tags
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Tagi i filtry szablonów Django
+
+package "Tagi sterujące ({% %})" {
+    card "{% if %} / {% elif %} / {% else %}" as if_tag
+    card "{% for %} / {% empty %}" as for_tag
+    card "{% url 'name' %}" as url_tag
+    card "{% block name %}" as block_tag
+    card "{% extends 'base.html' %}" as extends_tag
+    card "{% include 'partial.html' %}" as include_tag
+    card "{% csrf_token %}" as csrf_tag
+    card "{% static 'path' %}" as static_tag
+    card "{% with var=value %}" as with_tag
+}
+
+package "Zmienne ({{ }})" {
+    card "{{ variable }}" as var_tag
+    card "{{ object.attribute }}" as attr_tag
+    card "{{ list.0 }}" as index_tag
+}
+
+package "Filtry (|)" {
+    card "{{ text|truncatechars:50 }}" as trunc
+    card "{{ date|date:'d.m.Y' }}" as date_f
+    card "{{ value|default:'brak' }}" as default_f
+    card "{{ items|length }}" as length_f
+    card "{{ text|upper }}" as upper_f
+    card "{{ html|safe }}" as safe_f
+    card "{{ list|join:', ' }}" as join_f
+}
+
+@enduml
+

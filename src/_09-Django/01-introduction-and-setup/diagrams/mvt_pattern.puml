@@ -1,0 +1,26 @@
+@startuml mvt_pattern
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName "DejaVu Sans"
+
+title Wzorzec MVT w Django
+
+actor Przeglądarka as B
+participant "urls.py\n(URLconf)" as U
+participant "views.py\n(View)" as V
+participant "models.py\n(Model)" as M
+database "SQLite\n(baza danych)" as DB
+participant "template.html\n(Template)" as T
+
+B -> U : HTTP GET /books/
+U -> V : wywołuje book_list(request)
+V -> M : Book.objects.all()
+M -> DB : SELECT * FROM catalog_book
+DB --> M : wiersze danych
+M --> V : QuerySet [Book, Book, ...]
+V -> T : render(request, 'book_list.html', context)
+T --> V : wypełniony HTML
+V --> B : HTTP 200 OK + HTML
+
+@enduml
+

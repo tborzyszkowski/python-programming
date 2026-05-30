@@ -1,0 +1,32 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Usuń autora: {{ author }}{% endblock %}
+
+{% block content %}
+<h1>Usuń autora</h1>
+
+<div class="card">
+    <p>Czy na pewno chcesz usunąć autora <strong>{{ author }}</strong>?</p>
+
+    {% if books %}
+    <div class="alert alert-warning" style="margin-top:.8rem;">
+        <strong>⚠️ Uwaga!</strong> Usunięcie autora spowoduje automatyczne usunięcie
+        następujących {{ books.count }} książek (ON DELETE CASCADE):
+        <ul style="margin-top:.4rem;">
+        {% for book in books %}
+            <li>{{ book.title }} {% if book.year %}({{ book.year }}){% endif %}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <form method="post" style="margin-top:1rem;">
+        {% csrf_token %}
+        <div class="actions">
+            <button type="submit" class="btn btn-danger">Tak, usuń autora{% if books %} i {{ books.count }} książki{% endif %}</button>
+            <a href="{% url 'catalog:author_detail' pk=author.pk %}" class="btn btn-secondary">Anuluj</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

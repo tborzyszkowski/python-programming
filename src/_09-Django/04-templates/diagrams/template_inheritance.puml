@@ -1,0 +1,30 @@
+@startuml template_inheritance
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Dziedziczenie szablonów Django
+
+rectangle "base.html (bazowy)" as base {
+    rectangle "{% block title %}...{% endblock %}" as title_block
+    rectangle "Nawigacja (wspólna)" as nav
+    rectangle "{% block content %}...{% endblock %}" as content_block
+    rectangle "Stopka (wspólna)" as footer
+}
+
+rectangle "author_list.html" as alist {
+    rectangle "{% extends 'base.html' %}" as ext1
+    rectangle "{% block title %}Autorzy{% endblock %}" as t1
+    rectangle "{% block content %}\n  <table>...</table>\n{% endblock %}" as c1
+}
+
+rectangle "book_detail.html" as bdetail {
+    rectangle "{% extends 'base.html' %}" as ext2
+    rectangle "{% block title %}{{ book.title }}{% endblock %}" as t2
+    rectangle "{% block content %}\n  <article>...</article>\n{% endblock %}" as c2
+}
+
+base <|-- alist : extends
+base <|-- bdetail : extends
+
+@enduml
+

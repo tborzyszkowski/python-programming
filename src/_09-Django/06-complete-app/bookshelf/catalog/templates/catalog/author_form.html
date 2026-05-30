@@ -1,0 +1,48 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div class="card">
+<form method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+    <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+        {{ field }}
+        {% if field.help_text %}
+            <small style="color:#777;">{{ field.help_text }}</small>
+        {% endif %}
+        {% if field.errors %}
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-error">
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="actions">
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+        {% if author %}
+            <a href="{% url 'catalog:author_detail' pk=author.pk %}" class="btn btn-secondary">Anuluj</a>
+        {% else %}
+            <a href="{% url 'catalog:author_list' %}" class="btn btn-secondary">Anuluj</a>
+        {% endif %}
+    </div>
+</form>
+</div>
+{% endblock %}
+

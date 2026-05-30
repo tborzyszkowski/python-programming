@@ -1,0 +1,56 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}Autorzy{% endblock %}
+
+{% block content %}
+<h1>Autorzy</h1>
+
+<form class="search-form" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Szukaj po nazwisku...">
+    <button type="submit" class="btn btn-primary">Szukaj</button>
+    {% if query %}<a href="{% url 'catalog:author_list' %}" class="btn btn-secondary">Wyczyść</a>{% endif %}
+</form>
+
+<div class="actions" style="margin-bottom:1rem;">
+    <a href="{% url 'catalog:author_create' %}" class="btn btn-primary">+ Dodaj autora</a>
+</div>
+
+{% if authors %}
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Autor</th>
+            <th>Rok ur.</th>
+            <th>Książki</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for author in authors %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+                <a href="{% url 'catalog:author_detail' pk=author.pk %}">
+                    {{ author.last_name }}, {{ author.first_name }}
+                </a>
+            </td>
+            <td>{{ author.birth_year|default:"–" }}</td>
+            <td><span class="badge">{{ author.books.count }}</span></td>
+            <td>
+                <a href="{% url 'catalog:author_update' pk=author.pk %}" class="btn btn-warning" style="font-size:.8rem;padding:.2rem .6rem;">Edytuj</a>
+                <a href="{% url 'catalog:author_delete' pk=author.pk %}" class="btn btn-danger" style="font-size:.8rem;padding:.2rem .6rem;">Usuń</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    {% if query %}
+        <p>Nie znaleziono autorów pasujących do „{{ query }}".</p>
+    {% else %}
+        <p>Brak autorów. <a href="{% url 'catalog:author_create' %}">Dodaj pierwszego!</a></p>
+    {% endif %}
+{% endif %}
+{% endblock %}
+

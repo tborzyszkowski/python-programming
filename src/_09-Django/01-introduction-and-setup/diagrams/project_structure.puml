@@ -1,0 +1,38 @@
+@startuml django_project_structure
+!theme plain
+skinparam backgroundColor #FEFEFE
+
+title Struktura projektu Django
+
+package "moj_projekt/" {
+    file "manage.py" as manage
+    package "moj_projekt/ (konfiguracja)" {
+        file "__init__.py" as init1
+        file "settings.py" as settings
+        file "urls.py" as urls_root
+        file "wsgi.py" as wsgi
+        file "asgi.py" as asgi
+    }
+    package "mojapp/ (aplikacja)" {
+        file "__init__.py" as init2
+        file "admin.py" as admin
+        file "apps.py" as apps
+        file "models.py" as models
+        file "views.py" as views
+        file "urls.py" as urls_app
+        file "forms.py" as forms
+        folder "migrations/" as migrations
+        folder "templates/mojapp/" as templates
+        folder "static/" as static
+    }
+    database "db.sqlite3" as db
+}
+
+manage ..> settings : konfiguruje
+models ..> db : migracje
+views ..> models : QuerySet
+views ..> templates : render()
+urls_root --> urls_app : include()
+
+@enduml
+
